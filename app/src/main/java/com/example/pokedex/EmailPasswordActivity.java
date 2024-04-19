@@ -77,13 +77,13 @@ public class EmailPasswordActivity extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "createUserWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
-                            Toast.makeText(EmailPasswordActivity.this, "Register successfully.",
+                            Toast.makeText(EmailPasswordActivity.this, "Te has registrado correctamente.",
                                     Toast.LENGTH_SHORT).show();
                             finish();
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                            Toast.makeText(EmailPasswordActivity.this, "Authentication failed.",
+                            Toast.makeText(EmailPasswordActivity.this, "UPs! hay aglo que no esta bien",
                                     Toast.LENGTH_SHORT).show();
 
                         }

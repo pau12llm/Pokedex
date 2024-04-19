@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "450955167099",
-    "project_id": "pokedex-6118f",
-    "storage_bucket": "pokedex-6118f.appspot.com"
+    "project_number": "543688973391",
+    "project_id": "pokemonappp",
+    "storage_bucket": "pokemonappp.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:450955167099:android:649da69019e7ea044669de",
+        "mobilesdk_app_id": "1:543688973391:android:fd5623040e9eb8cfb99e3a",
         "android_client_info": {
           "package_name": "com.example.pokedex"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyBYcCd7Z7w1I6VaALxOzsx9uIZ_c5u3PYM"
+          "current_key": "AIzaSyAnpqNOBx5jDRLgino3s0f--W5j6PwvEWA"
         }
       ],
       "services": {
