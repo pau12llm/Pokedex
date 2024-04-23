@@ -20,7 +20,7 @@ import com.google.firebase.auth.FirebaseUser;
 //NOMBRE APPI --> pokeapi.co
 public class MainActivity extends AppCompatActivity {
 
-    private static final String TAG = "MainActivity";
+    private final String TAG = "MainActivity";
     private FirebaseAuth mAuth;
 
     @Override
