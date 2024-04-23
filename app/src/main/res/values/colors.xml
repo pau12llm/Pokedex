@@ -5,5 +5,6 @@
     <color name="red">#C70039</color>
     <color name="blue.cielo">#FDD503</color>
     <color name="red2">#FF0000</color>
+    <color name="textColorPrimary">#E1D4D4</color>
 
 </resources>
