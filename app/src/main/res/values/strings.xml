@@ -2,6 +2,7 @@
     <string name="app_name">Pokedex</string>
     <string name="password">password</string>
     <string name="email">email</string>
+    <string name="register">Register</string>
 
 
 </resources>

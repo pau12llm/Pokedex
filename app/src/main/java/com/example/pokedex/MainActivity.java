@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -43,8 +44,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        Button registerButton = findViewById(R.id.buttonRegister);
-        registerButton.setOnClickListener(new View.OnClickListener() {
+        TextView textView = findViewById(R.id.registerNow);
+
+        textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // Aquí inicia la actividad EmailPasswordActivity para iniciar sesión
