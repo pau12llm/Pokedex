@@ -75,8 +75,7 @@ public class MainActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithEmail:success");
-
-
+                            startActivity(new Intent(MainActivity.this, TabBarActivity.class));
                             Toast.makeText(MainActivity.this, "Authentication ok.",
                                     Toast.LENGTH_LONG).show();
                         } else {
