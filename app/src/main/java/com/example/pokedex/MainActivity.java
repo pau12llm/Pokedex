@@ -67,6 +67,9 @@ public class MainActivity extends AppCompatActivity {
             finish(); // Finaliza la actividad actual para que el usuario no pueda volver atrás con el botón de retroceso
         }
     }
+
+
+
     private void reload() { }
     private void signIn(String email, String password) {
 
