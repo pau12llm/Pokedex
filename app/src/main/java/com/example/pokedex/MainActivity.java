@@ -61,10 +61,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onStart() {
         super.onStart();
-        // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        if(currentUser != null){
-            reload();
+        if (currentUser != null) {
+            startActivity(new Intent(MainActivity.this, TabBarActivity.class));
+            finish(); // Finaliza la actividad actual para que el usuario no pueda volver atrás con el botón de retroceso
         }
     }
     private void reload() { }

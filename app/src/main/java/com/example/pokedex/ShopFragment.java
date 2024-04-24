@@ -1,64 +1,90 @@
 package com.example.pokedex;
-
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import android.os.Bundle;
-
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+import android.widget.Toast;
+//pokemon inmplementación
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.squareup.picasso.Picasso;
+
+import java.lang.reflect.Type;
+
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link ShopFragment#newInstance} factory method to
+ * Use the {@link ShopFragment#//newInstance} factory method to
  * create an instance of this fragment.
  */
 public class ShopFragment extends Fragment {
+    private static final String TAG = "ShopFragment";
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    public ShopFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment ShopFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static ShopFragment newInstance(String param1, String param2) {
-        ShopFragment fragment = new ShopFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
+    private static final String BASE_URL = "https://pokeapi.co/api/v2/";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_shop, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        final TextView pokemonNameTextView = view.findViewById(R.id.pokemonNameTextView);
+
+        // Crear una instancia de Retrofit
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        // Crear una instancia de Gson con un InstanceCreator para Type
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(Type.class, new TypeInstanceCreator())
+                .create();
+
+        // Crear una instancia de la interfaz PokeApiService
+        PokeApiService service = retrofit.create(PokeApiService.class);
+
+        // Realizar una solicitud para obtener información sobre un Pokémon
+        Call<Pokemon> call = service.getPokemonByName("pikachu");
+        call.enqueue(new Callback<Pokemon>() {
+            @Override
+            public void onResponse(Call<Pokemon> call, Response<Pokemon> response) {
+                if (response.isSuccessful()) {
+                    Pokemon pokemon = response.body();
+
+                    // Mostrar el nombre del Pokémon en el TextView
+                    pokemonNameTextView.setText("Nombre del Pokémon: " + pokemon.getName());
+
+
+                } else {
+                    // Manejar el error de la solicitud HTTP
+                    Log.e(TAG, "Error en la solicitud: " + response.code());
+                    Toast.makeText(getContext(), "Error en la solicitud: " + response.message(), Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Pokemon> call, Throwable t) {
+                // Manejar el error de la solicitud
+                Log.e(TAG, "Error en la solicitud: " + t.getMessage());
+                Toast.makeText(getContext(), "Error en la solicitud: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

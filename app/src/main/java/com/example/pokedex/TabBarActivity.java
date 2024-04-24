@@ -19,24 +19,30 @@ import com.google.android.material.tabs.TabLayoutMediator;
 
 public class TabBarActivity extends AppCompatActivity {
 
+    private static final int[] TAB_ICONS = {
+            R.drawable.ic_tab_pokedex,
+            R.drawable.ic_tab_trainer,
+            R.drawable.ic_tab_shop
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_tab_bar);
-// Obtener TabLayout y ViewPager desde el layout
+
+        // Obtener TabLayout y ViewPager desde el layout
         TabLayout tabLayout = findViewById(R.id.tab_layout);
         ViewPager2 viewPager = findViewById(R.id.view_pager);
 
         // Configurar el adaptador de fragments y el ViewPager
         viewPager.setAdapter(new ViewPagerFragmentAdapter(this));
 
-        // Conectar el TabLayout con el ViewPager
+        // Conectar el TabLayout con el ViewPager y configurar los íconos
         new TabLayoutMediator(tabLayout, viewPager,
-                (tab, position) -> tab.setText("Tab " + (position + 1))
+                (tab, position) -> tab.setIcon(TAB_ICONS[position])
         ).attach();
     }
-
 
     private static class ViewPagerFragmentAdapter extends FragmentStateAdapter {
 
