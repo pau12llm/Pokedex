@@ -11,3 +11,4 @@ public class PokemonResponse {
             this.results = results;
         }
 }
+
