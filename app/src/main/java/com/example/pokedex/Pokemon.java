@@ -4,43 +4,40 @@ import java.lang.reflect.Type;
 import java.util.List;
 
 public class Pokemon {
-    private String name;
-    private int id;
-    private List<PokemonType> types;
+        private int number;
+        private String name;
+        private String url;
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public List<PokemonType> getTypes() {
-        return types;
-    }
-
-    public void setTypes(List<PokemonType> types) {
-        this.types = types;
-    }
-
-    public static class PokemonType {
-        private Type type;
-
-        public Type getType() {
-            return type;
+        public int getNumber() {
+                return number;
         }
 
-        public void setType(Type type) {
-            this.type = type;
+        public void setNumber(int number) {
+                this.number = number;
         }
-    }
+
+        public String getName() {
+                return name;
+        }
+
+        public void setName(String name) {
+                this.name = name;
+        }
+
+        public String getUrl() {
+                return url;
+        }
+
+        public void setUrl(String url) {
+                this.url = url;
+        }
+
+        // Método para extraer el número del Pokémon desde la URL
+        public void extractNumberFromUrl() {
+                if (url != null) {
+                        String[] urlParts = url.split("/");
+                        String lastPart = urlParts[urlParts.length - 1];
+                        this.number = Integer.parseInt(lastPart);
+                }
+        }
 }
