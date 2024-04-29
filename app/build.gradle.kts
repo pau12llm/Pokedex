@@ -51,9 +51,6 @@ dependencies {
     //pokeAPI(retrofit)
     implementation ("com.squareup.retrofit2:retrofit:2.9.0")
     implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
-    implementation ("com.android.support:cardview-v7:28.0.0")
-    implementation ("com.android support:design: 24.2.1")
-    implementation ("com.android,aupport:necyclervzex-77:24.2.11")
-    implementation ("com.squareup.picasso:picasso:2.71828")
+
 
 }
