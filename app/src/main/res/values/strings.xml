@@ -4,5 +4,15 @@
     <string name="email">email</string>
     <string name="register">Register</string>
 
+    <string name="shop_title">Shop</string>
+    <string name="pokeball_title">Pokeball</string>
+    <string name="pokeball_price">200</string>
+    <string name="superball_title">Superball</string>
+    <string name="superball_price">500</string>
+    <string name="ultraball_title">Ultraball</string>
+    <string name="ultraball_price">1500</string>
+    <string name="masterball_title">Masterball</string>
+    <string name="masterball_price">100.000</string>
+
 
 </resources>

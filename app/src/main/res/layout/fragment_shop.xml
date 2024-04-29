@@ -1,23 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:gravity="center">
+    android:background="#AAEFAA"
+    android:padding="16dp">
 
-    <!-- TextView para mostrar el nombre del Pokémon -->
     <TextView
-        android:id="@+id/pokemonNameTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Nombre del Pokémon:" />
+        android:text="@string/shop_title"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="16dp"/>
 
-    <!-- ImageView para mostrar la imagen del Pokémon -->
-    <ImageView
-        android:id="@+id/imageViewPokemon"
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:contentDescription="Descripción de la imagen del Pokémon" />
+        android:text="@string/pokeball_title"
+        android:textSize="18sp"
+        android:layout_marginBottom="8dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/pokeball_price"
+        android:textSize="16sp"
+        android:layout_marginBottom="16dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/superball_title"
+        android:textSize="18sp"
+        android:layout_marginBottom="8dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/superball_price"
+        android:textSize="16sp"
+        android:layout_marginBottom="16dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/ultraball_title"
+        android:textSize="18sp"
+        android:layout_marginBottom="8dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/ultraball_price"
+        android:textSize="16sp"
+        android:layout_marginBottom="16dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/masterball_title"
+        android:textSize="18sp"
+        android:layout_marginBottom="8dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/masterball_price"
+        android:textSize="16sp"
+        android:layout_marginBottom="16dp"/>
 
 </LinearLayout>
