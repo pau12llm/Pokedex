@@ -4,6 +4,7 @@ package com.example.pokedex;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 
 
@@ -14,9 +15,11 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.res.ResourcesCompat;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -32,6 +35,9 @@ public class EmailPasswordActivity extends AppCompatActivity {
     // [START declare_auth]
     private FirebaseAuth mAuth;
     // [END declare_auth]
+    TextView tv = findViewById(R.id.); // Asegúrate de que el TextView tenga un id en el archivo XML
+    Typeface customFont = ResourcesCompat.getFont(this, R.font.P); // Reemplaza "pokemon_solid" por el nombre de tu archivo de fuente, sin la extensión
+tv.setTypeface(customFont);
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
