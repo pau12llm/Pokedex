@@ -65,8 +65,8 @@ public class PokedexFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_shop, container, false);
 
-//        requestQueue = Volley.newRequestQueue(requireContext());
-//        stringRequest();
+        requestQueue = Volley.newRequestQueue(requireContext());
+        stringRequest();
 
 //        // Inicializar Retrofit
 //        Retrofit retrofit = new Retrofit.Builder()
@@ -84,26 +84,26 @@ public class PokedexFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_pokedex, container, false);
     }
 
-//    private void stringRequest(){
-//        StringRequest request = new StringRequest(
-//                Request.Method.GET,
-//                BASE_URL,
-//                new Response.Listener<String>() {
-//                    @Override
-//                    public void onResponse(String response) {
-//                        Log.d(TAG, "Pokemon name: " + response);
-//
-//                    }
-//                }, new Response.ErrorListener() {
-//                    @Override
-//                    public void onErrorResponse(VolleyError volleyError) {
-//
-//                    }
-//                }
-//
-//
-//        );
-//    }
+    private void stringRequest(){
+        StringRequest request = new StringRequest(
+                Request.Method.GET,
+                BASE_URL,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d(TAG, "Pokemon name: " + response);
+
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError volleyError) {
+
+                    }
+                }
+
+
+        );
+    }
 
 
 //    private void getPokemonInfo(int pokemonId) {
