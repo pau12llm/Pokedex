@@ -53,4 +53,7 @@ dependencies {
     implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
 
 
+    //Volley
+    implementation("com.android.volley:volley:1.2.1")
+
 }
