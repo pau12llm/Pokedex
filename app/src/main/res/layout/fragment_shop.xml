@@ -222,6 +222,7 @@
         android:layout_marginBottom="56dp"
         android:textSize="16sp"
         android:text=""
+        android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.116"
@@ -235,7 +236,7 @@
         android:layout_marginBottom="40dp"
         android:text="@string/buttonBuy"
         android:textColor="@color/white"
-        android:background="@drawable/button_buy"
+        android:s="@drawable/button_buy"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         />
