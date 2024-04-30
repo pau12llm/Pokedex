@@ -4,7 +4,8 @@
     <string name="email">email</string>
     <string name="register">Register</string>
 
-    <string name="shop_title">Shop</string>
+    <string name="shop_title">Pokeballs</string>
+    <string name="shop_total">TOTAL:</string>
     <string name="pokeball_title">Pokeball</string>
     <string name="pokeball_price">200</string>
     <string name="superball_title">Superball</string>
