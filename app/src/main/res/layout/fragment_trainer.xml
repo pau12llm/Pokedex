@@ -5,6 +5,13 @@
     android:layout_height="match_parent"
     tools:context=".TrainerFragment">
 
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="532dp"
+        android:layout_height="970dp"
+        android:layout_gravity="center"
+        android:src="@drawable/trainer" />
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
