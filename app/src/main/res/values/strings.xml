@@ -14,6 +14,8 @@
     <string name="ultraball_price">1500</string>
     <string name="masterball_title">Masterball</string>
     <string name="masterball_price">100.000</string>
+    <string name="poke_logo_description" />
+    <string name="confirm" />
 
 
 </resources>
