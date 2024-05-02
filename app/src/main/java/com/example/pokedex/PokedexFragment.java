@@ -38,7 +38,7 @@ public class PokedexFragment extends Fragment {
     private RequestQueue requestQueue;
     private GridView gridView;
     private PokemonAdapter adapter;
-    private List<String> pokemonNames;
+    private List<Pokemon> pokemonNames;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -59,7 +59,7 @@ public class PokedexFragment extends Fragment {
 
 
     private void stringRequest() {
-        String allPokemonUrl = BASE_URL + "pokemon?limit=1000";
+        String allPokemonUrl = BASE_URL + "pokemon?limit=151";
 
         StringRequest request = new StringRequest(
                 Request.Method.GET,
@@ -73,10 +73,15 @@ public class PokedexFragment extends Fragment {
                             System.out.println("Vamos a probar!! " );
                             pokemonNames = new ArrayList<>();
                             for (int i = 0; i < results.length(); i++) {
-                                JSONObject pokemon = results.getJSONObject(i);
-                                String name = pokemon.getString("name");
-                                pokemonNames.add(name);
+                                JSONObject pokemonJSON = results.getJSONObject(i);
+                                int id = pokemonJSON.getInt("id");
+                                String name = pokemonJSON.getString("name");
+                                String url = pokemonJSON.getString("url");
+                                Pokemon pokemon = new Pokemon(id,name,url);
+
+                                pokemonNames.add(pokemon);
                                 System.out.println("name: " + name);
+                                System.out.println("url: " + url);
                             }
 
                             // Configurar el adaptador con la lista de nombres de Pokémon
