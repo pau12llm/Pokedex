@@ -63,8 +63,10 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser != null) {
-            startActivity(new Intent(MainActivity.this, TabBarActivity.class));
-            finish(); // Finaliza la actividad actual para que el usuario no pueda volver atrás con el botón de retroceso
+            //startActivity(new Intent(MainActivity.this, TabBarActivity.class));
+            //finish(); // Finaliza la actividad actual para que el usuario no pueda volver atrás con el botón de retroceso
+            mAuth.signOut();
+
         }
     }
 

@@ -49,7 +49,7 @@ public class EmailPasswordActivity extends AppCompatActivity {
         super.onStart();
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if(currentUser != null){
-            reload();
+            //reload();
         }
     }
 
