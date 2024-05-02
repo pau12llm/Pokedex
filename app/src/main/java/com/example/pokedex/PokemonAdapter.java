@@ -11,22 +11,22 @@ import java.util.List;
 
 public class PokemonAdapter extends BaseAdapter {
 
-    private List<String> pokemonNames;
+    private List<Pokemon> pokemonList;
     private Context context;
 
-    public PokemonAdapter(Context context, List<String> pokemonNames) {
+    public PokemonAdapter(Context context, List<Pokemon> pokemonNames) {
         this.context = context;
-        this.pokemonNames = pokemonNames;
+        this.pokemonList = pokemonNames;
     }
 
     @Override
     public int getCount() {
-        return pokemonNames.size();
+        return pokemonList.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return pokemonNames.get(position);
+        return pokemonList.get(position);
     }
 
     @Override
@@ -47,8 +47,8 @@ public class PokemonAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
-        String pokemonName = pokemonNames.get(position);
-        viewHolder.textViewName.setText(pokemonName);
+        Pokemon pokemonName = pokemonList.get(position);
+        viewHolder.textViewName.setText(pokemonName.getName());
 
         return convertView;
     }

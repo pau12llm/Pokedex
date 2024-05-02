@@ -16,7 +16,16 @@
         android:layout_marginTop="10dp"
         android:textSize="25dp"
         android:textAlignment="center"
-        android:text="Pokedex" />
+        android:text="P o k e d e x"
+        android:textStyle="bold"
+        android:textColor="@color/yellowPokemon"
+        android:fontFamily="@font/pokemon_solid"
+        android:shadowColor="#000000"
+        android:shadowDx="3"
+        android:shadowDy="3"
+        android:shadowRadius="3"
+        android:letterSpacing="-0.2"/>
+
     <EditText
         android:id="@+id/editText"
         android:layout_width="match_parent"

@@ -1,19 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <!-- item_pokemon.xml -->
+
     <TextView
-        xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/textViewName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="16sp"
-        android:padding="8dp"
         android:gravity="center"
-        android:textColor="@android:color/white"/>
-<!--        android:background="@drawable/item_background"-->
+        android:padding="8dp"
+
+        android:textSize="16sp"
+        android:text="nombre"
+        tools:layout_editor_absoluteX="-16dp"
+        tools:layout_editor_absoluteY="176dp" />
+
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:layout_editor_absoluteX="141dp"
+        tools:layout_editor_absoluteY="16dp"
+        tools:srcCompat="@tools:sample/avatars" />
+    <!--        android:background="@drawable/item_background"-->
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
