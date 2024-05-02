@@ -8,6 +8,12 @@ public class Pokemon {
         private String name;
         private String url;
 
+        public Pokemon(int number, String name, String url) {
+                this.number = number;
+                this.name = name;
+                this.url = url;
+        }
+
         public int getNumber() {
                 return number;
         }

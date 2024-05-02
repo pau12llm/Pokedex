@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -48,8 +49,9 @@ public class ShopFragment extends Fragment {
         // Inicializar la lista de items
         itemList = new ArrayList<>();
 
-        // Configurar el RecyclerView con un LinearLayoutManager
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        // Configurar el RecyclerView con un GridLayoutManager
+        recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
+
 
         // Crear un adaptador vacío por ahora
         itemAdapter = new ShopItemAdapter(getContext(), itemList);
@@ -70,6 +72,7 @@ public class ShopFragment extends Fragment {
                     public void onResponse(JSONObject response) {
                         try {
                             JSONArray results = response.getJSONArray("results");
+                            Log.d(TAG, "Number of items received from API: " + results.length());
                             for (int i = 0; i < results.length(); i++) {
                                 JSONObject itemObject = results.getJSONObject(i);
                                 String itemName = itemObject.getString("name");
