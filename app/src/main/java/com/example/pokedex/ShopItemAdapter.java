@@ -1,6 +1,7 @@
 package com.example.pokedex;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,6 +48,9 @@ public class ShopItemAdapter extends RecyclerView.Adapter<ShopItemAdapter.ItemVi
         } else {
             holder.imageViewItem.setImageResource(R.drawable.pokeball);
         }
+        Log.d("ShopItemAdapter", "Item name: " + item.getName());
+        Log.d("ShopItemAdapter", "Item category: " + item.getCategory());
+        Log.d("ShopItemAdapter", "Item image URL: " + item.getImageUrl());
     }
 
     @Override

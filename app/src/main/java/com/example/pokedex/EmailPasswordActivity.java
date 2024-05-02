@@ -1,52 +1,35 @@
 package com.example.pokedex;
 
-
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.content.Intent;
-import android.graphics.Typeface;
-import android.os.Bundle;
-
-
-
-import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
-import androidx.core.content.res.ResourcesCompat;
-
+import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-
+import com.google.firebase.auth.UserProfileChangeRequest;
 
 public class EmailPasswordActivity extends AppCompatActivity {
-//public class EmailPasswordActivity extends Activity {
 
     private static final String TAG = "EmailPassword";
-    // [START declare_auth]
     private FirebaseAuth mAuth;
-    // [END declare_auth]
-
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_email_password);
 
-        // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
 
         EditText emailEditText = findViewById(R.id.editTextEmail);
         EditText passwordEditText = findViewById(R.id.editTextPassword);
+        EditText nameEditText = findViewById(R.id.editTextName);
 
         Button registerButton = findViewById(R.id.buttonConfirm);
         registerButton.setOnClickListener(new View.OnClickListener() {
@@ -54,53 +37,57 @@ public class EmailPasswordActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String email = emailEditText.getText().toString();
                 String password = passwordEditText.getText().toString();
-                createAccount(email,password);
+                String name = nameEditText.getText().toString();
+
+                createAccount(email, password, name);
             }
         });
     }
 
-    // [START on_start_check_user]
     @Override
-    public void onStart() {
+    protected void onStart() {
         super.onStart();
-        // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if(currentUser != null){
             reload();
         }
     }
-    // [END on_start_check_user]
 
-    private void createAccount(String email, String password) {
-        // [START create_user_with_email]
+    private void createAccount(String email, String password, String name) {
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            Log.d(TAG, "createUserWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
+                            updateProfile(user, name); // Llamar a updateProfile con el nombre
                             Toast.makeText(EmailPasswordActivity.this, "Te has registrado correctamente.",
                                     Toast.LENGTH_SHORT).show();
                             finish();
                         } else {
-                            // If sign in fails, display a message to the user.
                             Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                            Toast.makeText(EmailPasswordActivity.this, "UPs! hay aglo que no esta bien",
+                            Toast.makeText(EmailPasswordActivity.this, "Algo salió mal.",
                                     Toast.LENGTH_SHORT).show();
-
                         }
                     }
                 });
-
     }
-
-
 
     private void reload() { }
 
-    private void updateUI(FirebaseUser user) {
+    private void updateProfile(FirebaseUser user, String name) {
+        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                .setDisplayName(name)
+                .build();
 
+        user.updateProfile(profileUpdates)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Log.d(TAG, "User profile updated.");
+                        }
+                    }
+                });
     }
 }
