@@ -10,6 +10,10 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.List;
 
 public class PokemonAdapter extends BaseAdapter {
@@ -17,9 +21,9 @@ public class PokemonAdapter extends BaseAdapter {
     private List<Pokemon> pokemonList;
     private Context context;
 
-    public PokemonAdapter(Context context, List<Pokemon> pokemonNames) {
+    public PokemonAdapter(Context context, List<Pokemon> pokemonList) {
         this.context = context;
-        this.pokemonList = pokemonNames;
+        this.pokemonList = pokemonList;
     }
 
     @Override
@@ -48,8 +52,6 @@ public class PokemonAdapter extends BaseAdapter {
             viewHolder.imageViewPokemon = convertView.findViewById(R.id.imageView);
 
             convertView.setTag(viewHolder);
-
-
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
@@ -57,15 +59,22 @@ public class PokemonAdapter extends BaseAdapter {
         Pokemon pokemon = pokemonList.get(position);
         viewHolder.textViewName.setText(pokemon.getName());
 
+        // Obtener la URL de la imagen del Pokémon (por defecto o brillante)
+        String imageUrl;
+        if (pokemon.isShiny()) {
+            imageUrl = pokemon.getUrl_shiny();
+        } else {
+            imageUrl = pokemon.getUrl_default();
+        }
+
         // Cargar la imagen utilizando Glide desde la URL
         Glide.with(context)
-                .load(pokemon.getUrl_default())
-//                .placeholder(R.drawable.placeholder_image) // Imagen de marcador de posición opcional
-//                .error(R.drawable.error_image) // Imagen de error opcional
+                .load(imageUrl)
                 .into(viewHolder.imageViewPokemon);
 
         return convertView;
     }
+
 
     private static class ViewHolder {
         TextView textViewName;
