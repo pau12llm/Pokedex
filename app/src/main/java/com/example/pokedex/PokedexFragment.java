@@ -70,18 +70,22 @@ public class PokedexFragment extends Fragment {
                         try {
                             JSONObject jsonResponse = new JSONObject(response);
                             JSONArray results = jsonResponse.getJSONArray("results");
-                            System.out.println("Vamos a probar!! " );
+//                            System.out.println("Vamos a probar!! " );
                             pokemonNames = new ArrayList<>();
                             for (int i = 0; i < results.length(); i++) {
                                 JSONObject pokemonJSON = results.getJSONObject(i);
-                                int id = pokemonJSON.getInt("id");
+
+//                                System.out.println(pokemonJSON);
+
+                                int id = i+1;
                                 String name = pokemonJSON.getString("name");
                                 String url = pokemonJSON.getString("url");
+
                                 Pokemon pokemon = new Pokemon(id,name,url);
 
                                 pokemonNames.add(pokemon);
-                                System.out.println("name: " + name);
-                                System.out.println("url: " + url);
+//                                System.out.println("name: " + name);
+//                                System.out.println("url: " + url);
                             }
 
                             // Configurar el adaptador con la lista de nombres de Pokémon
