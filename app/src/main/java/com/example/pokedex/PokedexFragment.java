@@ -52,13 +52,13 @@ public class PokedexFragment extends Fragment {
         gridView = view.findViewById(R.id.gridView);
 
         // Realizar la solicitud para obtener la lista de nombres de Pokémon
-        stringRequest();
+        pokemonListRequest();
 
         return view;
     }
 
 
-    private void stringRequest() {
+    private void pokemonListRequest() {
         String allPokemonUrl = BASE_URL + "pokemon?limit=151";
 
         StringRequest request = new StringRequest(
@@ -82,6 +82,8 @@ public class PokedexFragment extends Fragment {
                                 String url = pokemonJSON.getString("url");
 
                                 Pokemon pokemon = new Pokemon(id,name,url);
+
+//                                pokemonDetailRequest(pokemon);
 
                                 pokemonNames.add(pokemon);
 //                                System.out.println("name: " + name);
@@ -111,6 +113,64 @@ public class PokedexFragment extends Fragment {
         // Agregar la solicitud a la cola de solicitudes
         requestQueue.add(request);
     }
+
+
+//    private void pokemonDetailRequest(Pokemon pokemon) {
+//        String allPokemonUrl = pokemon.getUrl_API();
+//        System.out.println("allPokemonUrl" + allPokemonUrl);
+//
+//        StringRequest request = new StringRequest(
+//                Request.Method.GET,
+//                allPokemonUrl,
+//                new Response.Listener<String>() {
+//                    @Override
+//                    public void onResponse(String response) {
+//                        try {
+//                            JSONObject jsonResponse = new JSONObject(response);
+//                            JSONArray results = jsonResponse.getJSONArray("results");
+////                            System.out.println("Vamos a probar!! " );
+//                            pokemonNames = new ArrayList<>();
+//                            for (int i = 0; i < results.length(); i++) {
+//                                JSONObject pokemonJSON = results.getJSONObject(i);
+//
+//                                System.out.println(pokemonJSON);
+//
+////                                int id = i+1;
+////                                String name = pokemonJSON.getString("name");
+////                                String url = pokemonJSON.getString("url");
+////
+////                                Pokemon pokemon = new Pokemon(id,name,url);
+////
+////                                pokemonNames.add(pokemon);
+//////                                System.out.println("name: " + name);
+//////                                System.out.println("url: " + url);
+//                            }
+//
+//                            // Configurar el adaptador con la lista de nombres de Pokémon
+//                            adapter = new PokemonAdapter(requireContext(), pokemonNames);
+//
+//                            // Vincular el adaptador al GridView
+//                            gridView.setAdapter(adapter);
+//
+//                        } catch (JSONException e) {
+//                            e.printStackTrace();
+//                            Log.e(TAG, "Error al analizar la respuesta JSON POkemon Detail: " + e.getMessage());
+//                        }
+//                    }
+//                },
+//                new Response.ErrorListener() {
+//                    @Override
+//                    public void onErrorResponse(VolleyError error) {
+//                        Log.e(TAG, "Error en la solicitud: " + error.toString());
+//                    }
+//                }
+//        );
+//
+//        // Agregar la solicitud a la cola de solicitudes
+//        requestQueue.add(request);
+//    }
+
+
 
 
 }
