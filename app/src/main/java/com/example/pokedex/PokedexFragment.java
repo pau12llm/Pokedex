@@ -16,6 +16,7 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
@@ -28,7 +29,7 @@ import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link PokedexFragment#newInstance} factory method to
+
  * create an instance of this fragment.
  */
 public class PokedexFragment extends Fragment {
@@ -52,13 +53,13 @@ public class PokedexFragment extends Fragment {
         gridView = view.findViewById(R.id.gridView);
 
         // Realizar la solicitud para obtener la lista de nombres de Pokémon
-        stringRequest();
+        pokemonListRequest();
 
         return view;
     }
 
 
-    private void stringRequest() {
+    private void pokemonListRequest() {
         String allPokemonUrl = BASE_URL + "pokemon?limit=151";
 
         StringRequest request = new StringRequest(
@@ -70,18 +71,15 @@ public class PokedexFragment extends Fragment {
                         try {
                             JSONObject jsonResponse = new JSONObject(response);
                             JSONArray results = jsonResponse.getJSONArray("results");
-                            System.out.println("Vamos a probar!! " );
                             pokemonNames = new ArrayList<>();
                             for (int i = 0; i < results.length(); i++) {
                                 JSONObject pokemonJSON = results.getJSONObject(i);
-                                int id = pokemonJSON.getInt("id");
                                 String name = pokemonJSON.getString("name");
                                 String url = pokemonJSON.getString("url");
-                                Pokemon pokemon = new Pokemon(id,name,url);
-
+                                Pokemon pokemon = new Pokemon(i + 1, name, url);
                                 pokemonNames.add(pokemon);
-                                System.out.println("name: " + name);
-                                System.out.println("url: " + url);
+                                // Obtener los detalles del Pokémon para extraer las URL de las imágenes
+                                pokemonDetailRequest(pokemon);
                             }
 
                             // Configurar el adaptador con la lista de nombres de Pokémon
@@ -100,6 +98,39 @@ public class PokedexFragment extends Fragment {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Log.e(TAG, "Error en la solicitud: " + error.toString());
+                    }
+                }
+        );
+
+        // Agregar la solicitud a la cola de solicitudes
+        requestQueue.add(request);
+    }
+
+    private void pokemonDetailRequest(final Pokemon pokemon) {
+        JsonObjectRequest request = new JsonObjectRequest(
+                Request.Method.GET,
+                pokemon.getUrl_API(),
+                null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            JSONObject sprites = response.getJSONObject("sprites");
+                            String defaultImageUrl = sprites.getString("front_default");
+                            String shinyImageUrl = sprites.getString("front_shiny");
+                            pokemon.setUrl_default(defaultImageUrl);
+                            pokemon.setUrl_shiny(shinyImageUrl);
+                            adapter.notifyDataSetChanged(); // Notificar al adaptador que los datos han cambiado
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            Log.e(TAG, "Error al analizar la respuesta JSON del detalle del Pokémon: " + e.getMessage());
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e(TAG, "Error en la solicitud del detalle del Pokémon: " + error.toString());
                     }
                 }
         );

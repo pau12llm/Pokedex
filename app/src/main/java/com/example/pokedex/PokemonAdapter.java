@@ -5,7 +5,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.List;
 
@@ -14,9 +21,9 @@ public class PokemonAdapter extends BaseAdapter {
     private List<Pokemon> pokemonList;
     private Context context;
 
-    public PokemonAdapter(Context context, List<Pokemon> pokemonNames) {
+    public PokemonAdapter(Context context, List<Pokemon> pokemonList) {
         this.context = context;
-        this.pokemonList = pokemonNames;
+        this.pokemonList = pokemonList;
     }
 
     @Override
@@ -42,18 +49,35 @@ public class PokemonAdapter extends BaseAdapter {
             convertView = LayoutInflater.from(context).inflate(R.layout.item_pokemon, parent, false);
             viewHolder = new ViewHolder();
             viewHolder.textViewName = convertView.findViewById(R.id.textViewName);
+            viewHolder.imageViewPokemon = convertView.findViewById(R.id.imageView);
+
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
-        Pokemon pokemonName = pokemonList.get(position);
-        viewHolder.textViewName.setText(pokemonName.getName());
+        Pokemon pokemon = pokemonList.get(position);
+        viewHolder.textViewName.setText(pokemon.getName());
+
+        // Obtener la URL de la imagen del Pokémon (por defecto o brillante)
+        String imageUrl;
+        if (pokemon.isShiny()) {
+            imageUrl = pokemon.getUrl_shiny();
+        } else {
+            imageUrl = pokemon.getUrl_default();
+        }
+
+        // Cargar la imagen utilizando Glide desde la URL
+        Glide.with(context)
+                .load(imageUrl)
+                .into(viewHolder.imageViewPokemon);
 
         return convertView;
     }
 
+
     private static class ViewHolder {
         TextView textViewName;
+        ImageView imageViewPokemon;
     }
 }

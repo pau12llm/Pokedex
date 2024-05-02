@@ -77,8 +77,8 @@ public class ShopFragment extends Fragment {
                                 JSONObject itemObject = results.getJSONObject(i);
                                 String itemName = itemObject.getString("name");
                                 String itemUrl = itemObject.getString("url");
-                                // Crear un nuevo Item y agregarlo a la lista
-                                itemList.add(new item(itemName, "Category", itemUrl));
+                                // Ahora haces una solicitud para obtener la URL de la imagen del ítem
+                                fetchItemImage(itemName, itemUrl);
                             }
                             // Notificar al adaptador que los datos han cambiado
                             itemAdapter.notifyDataSetChanged();
@@ -98,4 +98,33 @@ public class ShopFragment extends Fragment {
         RequestQueue requestQueue = Volley.newRequestQueue(getContext());
         requestQueue.add(jsonObjectRequest);
     }
+    private void fetchItemImage(String itemName, String itemUrl) {
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, itemUrl, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            JSONObject spritesObject = response.getJSONObject("sprites");
+                            String imageUrl = spritesObject.getString("default");
+                            // Crear un nuevo Item con la URL de la imagen y agregarlo a la lista
+                            itemList.add(new item(itemName, "Category", imageUrl));
+                            // Notificar al adaptador que los datos han cambiado
+                            itemAdapter.notifyDataSetChanged();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            Log.e(TAG, "Error parsing JSON", e);
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                error.printStackTrace();
+            }
+        });
+
+        // Agregar la solicitud a la cola de solicitudes
+        RequestQueue requestQueue = Volley.newRequestQueue(getContext());
+        requestQueue.add(jsonObjectRequest);
+    }
+
 }
