@@ -50,6 +50,7 @@ public class PokemonAdapter extends BaseAdapter {
             viewHolder = new ViewHolder();
             viewHolder.textViewName = convertView.findViewById(R.id.textViewName);
             viewHolder.imageViewPokemon = convertView.findViewById(R.id.imageView);
+            viewHolder.pokeballImg = convertView.findViewById(R.id.pokeballImg);
 
             convertView.setTag(viewHolder);
         } else {
@@ -72,6 +73,11 @@ public class PokemonAdapter extends BaseAdapter {
                 .load(imageUrl)
                 .into(viewHolder.imageViewPokemon);
 
+
+        Glide.with(context)
+                .load("https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/master-ball.png")
+                .into(viewHolder.pokeballImg);
+
         return convertView;
     }
 
@@ -79,5 +85,6 @@ public class PokemonAdapter extends BaseAdapter {
     private static class ViewHolder {
         TextView textViewName;
         ImageView imageViewPokemon;
+        ImageView pokeballImg;
     }
 }

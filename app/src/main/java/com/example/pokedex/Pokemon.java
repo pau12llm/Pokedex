@@ -33,7 +33,7 @@ public class Pokemon {
                 this.name = name;
                 this.url_API = url_API;
                 this.shiny = false;
-                this.url_default = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png";
+                this.url_default = "https://www.pngall.com/wp-content/uploads/4/Pokeball-PNG-Free-Download.png";
 
         }
 
