@@ -1,4 +1,4 @@
-package com.example.pokedex;
+/*package com.example.pokedex;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
@@ -13,6 +13,12 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -21,6 +27,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TrainerFragment extends Fragment {
+    // Obtener el ID de usuario único de Firebase Authentication
+    String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+    // Obtener el documento correspondiente de la colección "entrenadores" de Firebase Firestore
+    DocumentReference entrenadorDoc = FirebaseFirestore.getInstance().collection("trainers").document(userId);
+
+    // Obtener el nombre del entrenador del documento
+    entrenadorDoc.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+        @Override
+        public void onSuccess(DocumentSnapshot documentSnapshot) {
+            String nombreEntrenador = documentSnapshot.getString("nombre");
+            // Mostrar el nombre del entrenador en la interfaz de usuario
+        }
+    });
+
+
 
 //    private TextView trainerNameTextView;
 //    private TextView trainerMoneyTextView;
@@ -207,4 +229,4 @@ public class TrainerFragment extends Fragment {
 //    }
 
 }
-
+*/
