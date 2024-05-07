@@ -79,11 +79,9 @@ public class ShopFragment extends Fragment {
                                 String itemName = itemObject.getString("name");
                                 String itemUrl = itemObject.getString("url");
                                 // Suponiendo que el precio está representado como una cadena en el JSON
-                                String priceString = itemObject.getString("cost");
-                                // Convertir la cadena de precio a un entero
-                                int price = Integer.parseInt(priceString);
 
-                                fetchItemImage(itemName, itemUrl, price);
+
+                                fetchItemImage(itemName, itemUrl);
                             }
                             // Notificar al adaptador que los datos han cambiado
                             itemAdapter.notifyDataSetChanged();
@@ -103,7 +101,7 @@ public class ShopFragment extends Fragment {
         RequestQueue requestQueue = Volley.newRequestQueue(getContext());
         requestQueue.add(jsonObjectRequest);
     }
-    private void fetchItemImage(String itemName, String itemUrl, int price) {
+    private void fetchItemImage(String itemName, String itemUrl) {
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, itemUrl, null,
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -114,6 +112,7 @@ public class ShopFragment extends Fragment {
 
                             JSONObject categoryObject = response.getJSONObject("category");
                             String category = categoryObject.getString("name");
+                            int price = response.getInt("cost");
 
                             Log.d(TAG, "Item Name: " + itemName);
                             Log.d(TAG, "Item Category: " + category);

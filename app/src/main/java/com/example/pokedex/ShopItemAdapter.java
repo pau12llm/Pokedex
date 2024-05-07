@@ -42,6 +42,7 @@ public class ShopItemAdapter extends RecyclerView.Adapter<ShopItemAdapter.ItemVi
         // Establecer el nombre y la categoría del Item en los TextView correspondientes
         holder.textViewItemName.setText(item.getName());
         holder.textViewItemDescription.setText(item.getCategory());
+        holder.textPrice.setText("Price: "+ String.valueOf(item.getPrice()));
 
         // Cargar la imagen desde la URL utilizando Picasso
         if (item.getImageUrl() != null) {
