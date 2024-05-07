@@ -4,12 +4,24 @@ public class item {
     private String name;
     private String category;
     private String imageUrl;
+    private int price;
 
-    public item(String name, String category, String imageUrl) {
+    public item(String name, String category,int price, String imageUrl) {
         this.name = name;
         this.category = category;
         this.imageUrl = imageUrl;
+        this.price = price;
     }
+
+    public int getPrice() {
+        return price;
+    }
+
+    public void setPrice(int price) {
+        this.price = price;
+    }
+
+
 
     // Getter y Setter para el nombre
     public String getName() {

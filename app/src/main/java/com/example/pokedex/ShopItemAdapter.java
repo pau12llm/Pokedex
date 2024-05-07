@@ -1,6 +1,7 @@
 package com.example.pokedex;
 
 import android.content.Context;
+import android.graphics.text.TextRunShaper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -62,12 +63,14 @@ public class ShopItemAdapter extends RecyclerView.Adapter<ShopItemAdapter.ItemVi
         ImageView imageViewItem;
         TextView textViewItemName;
         TextView textViewItemDescription;
+        TextView textPrice;
 
         public ItemViewHolder(@NonNull View itemView) {
             super(itemView);
             imageViewItem = itemView.findViewById(R.id.imageView2);
             textViewItemName = itemView.findViewById(R.id.textView);
             textViewItemDescription = itemView.findViewById(R.id.textView3);
+            textPrice=itemView.findViewById(R.id.textView4);
         }
     }
 }

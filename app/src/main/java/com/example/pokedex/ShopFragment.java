@@ -73,12 +73,17 @@ public class ShopFragment extends Fragment {
                         try {
                             JSONArray results = response.getJSONArray("results");
                             Log.d(TAG, "Number of items received from API: " + results.length());
+                            Log.d(TAG, "JSON Response: " + response.toString());
                             for (int i = 0; i < results.length(); i++) {
                                 JSONObject itemObject = results.getJSONObject(i);
                                 String itemName = itemObject.getString("name");
                                 String itemUrl = itemObject.getString("url");
-                                // Ahora haces una solicitud para obtener la URL de la imagen del ítem
-                                fetchItemImage(itemName, itemUrl);
+                                // Suponiendo que el precio está representado como una cadena en el JSON
+                                String priceString = itemObject.getString("cost");
+                                // Convertir la cadena de precio a un entero
+                                int price = Integer.parseInt(priceString);
+
+                                fetchItemImage(itemName, itemUrl, price);
                             }
                             // Notificar al adaptador que los datos han cambiado
                             itemAdapter.notifyDataSetChanged();
@@ -98,7 +103,7 @@ public class ShopFragment extends Fragment {
         RequestQueue requestQueue = Volley.newRequestQueue(getContext());
         requestQueue.add(jsonObjectRequest);
     }
-    private void fetchItemImage(String itemName, String itemUrl) {
+    private void fetchItemImage(String itemName, String itemUrl, int price) {
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, itemUrl, null,
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -106,9 +111,14 @@ public class ShopFragment extends Fragment {
                         try {
                             JSONObject spritesObject = response.getJSONObject("sprites");
                             String imageUrl = spritesObject.getString("default");
-                            // Crear un nuevo Item con la URL de la imagen y agregarlo a la lista
-                            itemList.add(new item(itemName, "Category", imageUrl));
-                            // Notificar al adaptador que los datos han cambiado
+
+                            JSONObject categoryObject = response.getJSONObject("category");
+                            String category = categoryObject.getString("name");
+
+                            Log.d(TAG, "Item Name: " + itemName);
+                            Log.d(TAG, "Item Category: " + category);
+                            Log.d(TAG, "Item price: " + price);
+                            itemList.add(new item(itemName, category,price,imageUrl));
                             itemAdapter.notifyDataSetChanged();
                         } catch (JSONException e) {
                             e.printStackTrace();
