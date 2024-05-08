@@ -73,11 +73,14 @@ public class ShopFragment extends Fragment {
                         try {
                             JSONArray results = response.getJSONArray("results");
                             Log.d(TAG, "Number of items received from API: " + results.length());
+                            Log.d(TAG, "JSON Response: " + response.toString());
                             for (int i = 0; i < results.length(); i++) {
                                 JSONObject itemObject = results.getJSONObject(i);
                                 String itemName = itemObject.getString("name");
                                 String itemUrl = itemObject.getString("url");
-                                // Ahora haces una solicitud para obtener la URL de la imagen del ítem
+                                // Suponiendo que el precio está representado como una cadena en el JSON
+
+
                                 fetchItemImage(itemName, itemUrl);
                             }
                             // Notificar al adaptador que los datos han cambiado
@@ -106,9 +109,15 @@ public class ShopFragment extends Fragment {
                         try {
                             JSONObject spritesObject = response.getJSONObject("sprites");
                             String imageUrl = spritesObject.getString("default");
-                            // Crear un nuevo Item con la URL de la imagen y agregarlo a la lista
-                            itemList.add(new item(itemName, "Category", imageUrl));
-                            // Notificar al adaptador que los datos han cambiado
+
+                            JSONObject categoryObject = response.getJSONObject("category");
+                            String category = categoryObject.getString("name");
+                            int price = response.getInt("cost");
+
+                            Log.d(TAG, "Item Name: " + itemName);
+                            Log.d(TAG, "Item Category: " + category);
+                            Log.d(TAG, "Item price: " + price);
+                            itemList.add(new item(itemName, category,price,imageUrl));
                             itemAdapter.notifyDataSetChanged();
                         } catch (JSONException e) {
                             e.printStackTrace();

@@ -46,7 +46,14 @@ dependencies {
     // Add the dependency for the Firebase Authentication library
     // When using the BoM, you don't specify versions in Firebase library dependencies
     implementation("com.google.firebase:firebase-auth")
+// Firebase BoM
+    implementation (platform("com.google.firebase:firebase-bom:30.3.1"))
 
+    // Firebase Authentication
+    implementation ("com.google.firebase:firebase-auth")
+
+    // Firebase Firestore
+    implementation ("com.google.firebase:firebase-firestore")
     implementation ("androidx.viewpager2:viewpager2:1.0.0")
     //pokeAPI(retrofit)
     implementation ("com.squareup.retrofit2:retrofit:2.9.0")
