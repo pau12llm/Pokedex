@@ -22,39 +22,39 @@ import java.util.List;
 
 public class TrainerFragment extends Fragment {
 
-//    private TextView trainerNameTextView;
-//    private TextView trainerMoneyTextView;
-//    private RecyclerView itemRecyclerView;
-//    private RecyclerView pokemonRecyclerView;
+    private TextView trainerNameTextView;
+    private TextView trainerMoneyTextView;
+    private RecyclerView itemRecyclerView;
+    private RecyclerView pokemonRecyclerView;
 //    private List<Item> itemList;
-//    private List<Pokemon> pokemonList;
-//    private ItemAdapter itemAdapter;
-//    private PokemonAdapter pokemonAdapter;
-//    private RequestQueue requestQueue;
-//
-//    public TrainerFragment() {
-//        // Required empty public constructor
-//    }
-//
-//    @Override
-//    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-//                             Bundle savedInstanceState) {
-//        // Inflate the layout for this fragment
-//        View view = inflater.inflate(R.layout.fragment_trainer, container, false);
-//
-//        // Initialize UI elements
+    private List<Pokemon> pokemonList;
+
+    private PokemonAdapter pokemonAdapter;
+    private RequestQueue requestQueue;
+
+    public TrainerFragment() {
+        // Required empty public constructor
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View view = inflater.inflate(R.layout.fragment_trainer, container, false);
+
+        // Initialize UI elements
 //        trainerNameTextView = view.findViewById(R.id.trainer_name_text_view);
 //        trainerMoneyTextView = view.findViewById(R.id.trainer_money_text_view);
 //        itemRecyclerView = view.findViewById(R.id.item_recycler_view);
 //        pokemonRecyclerView = view.findViewById(R.id.pokemon_recycler_view);
-//
-//        // Initialize item list and adapter
+
+        // Initialize item list and adapter
 //        itemList = new ArrayList<>();
-//        itemAdapter = new ItemAdapter(itemList);
+
 //        itemRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 //        itemRecyclerView.setAdapter(itemAdapter);
-//
-//        // Initialize pokemon list and adapter
+
+        // Initialize pokemon list and adapter
 //        pokemonList = new ArrayList<>();
 //        pokemonAdapter = new PokemonAdapter(pokemonList);
 //        pokemonRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
@@ -62,13 +62,13 @@ public class TrainerFragment extends Fragment {
 //
 //        // Initialize Volley request queue
 //        requestQueue = Volley.newRequestQueue(getContext());
-//
-//        // Fetch trainer data from API
+
+        // Fetch trainer data from API
 //        fetchTrainerData();
-//
-//        return view;
-//    }
-//
+
+        return view;
+    }
+
 //    private void fetchTrainerData() {
 //        // TODO: Replace with actual API endpoint for fetching trainer data
 //        String apiEndpoint = "https://pokeapi.co/api/v2/pokemon/1";

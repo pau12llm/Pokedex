@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:gravity="center_horizontal"
+        >
+
+        <!-- Imagen del Pokémon -->
+        <ImageView
+            android:id="@+id/imageViewFront"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:scaleType="fitCenter"
+            android:adjustViewBounds="true"
+            tools:srcCompat="@tools:sample/avatars"/>
+        <ImageView
+            android:id="@+id/imageViewBack"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:scaleType="fitCenter"
+            android:adjustViewBounds="true"
+            tools:srcCompat="@tools:sample/avatars"/>
+        <!-- Nombre del Pokémon -->
+
+    </LinearLayout>
+    <TextView
+        android:id="@+id/textViewName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:paddingTop="8dp"
+        android:text="Pokemon Name" />
+    <TextView
+        android:id="@+id/textViewDescription"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:gravity="left"
+        android:paddingTop="8dp"
+        android:text="Pokemon Name" />
+    <!-- Otros detalles del Pokémon (puedes añadir más elementos según sea necesario) -->
+    <!-- Por ejemplo, tipos, habilidades, estadísticas, etc. -->
+
+    </LinearLayout>

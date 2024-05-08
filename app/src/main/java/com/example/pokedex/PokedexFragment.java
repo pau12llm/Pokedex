@@ -1,5 +1,6 @@
 package com.example.pokedex;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -11,8 +12,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 
@@ -23,6 +26,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.bumptech.glide.Glide;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -76,21 +80,50 @@ public class PokedexFragment extends Fragment {
         pokemonListRequest();
 
         searchEditText = view.findViewById(R.id.searchEditText);
+
         // Configurar el listener para la acción de teclado "Intro"
+
+
         searchEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_SEARCH ||
-                        (event != null && event.getAction() == KeyEvent.ACTION_DOWN &&
-                                event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
-                    // Se ha presionado la tecla "Intro" en el teclado
-                    if (event == null || !event.isShiftPressed()) {
-                        // Realizar la búsqueda cuando se presiona "Intro" sin mantener presionado Shift
-                        performSearch();
-                        return true; // Indicar que se ha manejado el evento
-                    }
+            public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
+                if (actionId == EditorInfo.IME_ACTION_SEARCH || actionId == EditorInfo.IME_ACTION_DONE ||
+                        keyEvent != null && keyEvent.getAction() == KeyEvent.ACTION_DOWN &&
+                                keyEvent.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
+                    // Acción a realizar cuando se presiona la tecla "Intro"
+                    System.out.println("pokelist =" +pokemonList.toString());
+
+//                    performSearch(); // Por ejemplo, una función para iniciar la búsqueda
+                    return true; // Indicar que se ha manejado el evento
                 }
-                return false; // No se ha manejado el evento
+                return false; // Devolver false para permitir que el sistema maneje el evento también
+            }
+        });
+
+        // Configurar el listener para el clic en los elementos del GridView
+//        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                // Manejar el clic en un elemento del GridView
+//                Pokemon clickedPokemon = pokemonList.get(position);
+//                String pokemonName = clickedPokemon.getName();
+//
+//                // Mostrar un Toast con el nombre del Pokémon clicado
+//                Toast.makeText(requireContext(), "Clic en: " + pokemonName, Toast.LENGTH_SHORT).show();
+//
+//                // Aquí puedes abrir una nueva actividad o fragmento para mostrar detalles del Pokémon seleccionado
+//            }
+//        });
+
+        // Configurar el listener para el clic en los elementos del GridView
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                // Manejar el clic en un elemento del GridView
+
+                Pokemon clickedPokemon = pokemonList.get(position);
+
+                showPokemonDetailsPopup(clickedPokemon);
             }
         });
 
@@ -183,8 +216,14 @@ public class PokedexFragment extends Fragment {
                             JSONObject sprites = response.getJSONObject("sprites");
                             String defaultImageUrl = sprites.getString("front_default");
                             String shinyImageUrl = sprites.getString("front_shiny");
-                            pokemon.setUrl_default(defaultImageUrl);
-                            pokemon.setUrl_shiny(shinyImageUrl);
+                            String defaultBackImageUrl = sprites.getString("back_default");
+                            String shinyBackImageUrl = sprites.getString("back_shiny");
+
+                            pokemon.setUrl_front_default(defaultImageUrl);
+                            pokemon.setUrl_front_shiny(shinyImageUrl);
+                            pokemon.setUrl_back_default(defaultBackImageUrl);
+                            pokemon.setUrl_back_shiny(shinyBackImageUrl);
+                            pokemonDetailInfoRequest(pokemon);
                             adapter.notifyDataSetChanged(); // Notificar al adaptador que los datos han cambiado
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -204,54 +243,155 @@ public class PokedexFragment extends Fragment {
         requestQueue.add(request);
     }
 
+    private void pokemonDetailInfoRequest(final Pokemon pokemon) {
+        String allPokemonUrl = BASE_URL + "pokemon-species/" + pokemon.getNumber() + "/" ;
+        JsonObjectRequest request = new JsonObjectRequest(
+                Request.Method.GET,
+                allPokemonUrl,
+                null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            // Obtener el flavor_text en inglés ("en")
+                            JSONArray flavorTextEntries = response.getJSONArray("flavor_text_entries");
+                            String flavorText = null;
+                            for (int i = 0; i < flavorTextEntries.length(); i++) {
+                                JSONObject entry = flavorTextEntries.getJSONObject(i);
+                                JSONObject language = entry.getJSONObject("language");
+                                String languageName = language.getString("name");
 
-    private void performSearch() {
-        String searchTerm = searchEditText.getText().toString().toLowerCase().trim();
+                                if (languageName.equals("en")) {
+                                    // Acceder al flavor_text de la entrada en inglés
+                                    flavorText = processFlavorText(entry.getString("flavor_text"));
 
-        if (!searchTerm.isEmpty()) {
-            // Limpiar la lista antes de realizar una nueva búsqueda
-            pokemonList.clear();
-            adapter.notifyDataSetChanged();
-
-            // Realizar la solicitud de búsqueda
-            String searchUrl = BASE_URL + "pokemon/" + searchTerm;
-
-            System.out.println("searchUrl==" + searchUrl);
-            JsonObjectRequest searchRequest = new JsonObjectRequest(
-                    Request.Method.GET,
-                    searchUrl,
-                    null,
-                    new Response.Listener<JSONObject>() {
-                        @Override
-                        public void onResponse(JSONObject response) {
-                            try {
-                                String name = response.getString("name");
-                                name = name.substring(0, 1).toUpperCase() + name.substring(1);
-                                String url = response.getString("url");
-                                Pokemon pokemon = new Pokemon(0, name, url); // Ajusta el ID según sea necesario
-                                pokemonList.add(pokemon);
-
-                                // Obtener detalles del Pokémon buscado
-                                pokemonDetailRequest(pokemon);
-
-                                adapter.notifyDataSetChanged(); // Actualizar el adaptador
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                                Log.e(TAG, "Error al analizar la respuesta de búsqueda JSON: " + e.getMessage());
+                                    // Romper el bucle una vez que se encuentre el flavor_text en inglés
+                                    break;
+                                }
                             }
-                        }
-                    },
-                    new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            Log.e(TAG, "Error en la solicitud de búsqueda: " + error.toString());
+
+                            pokemon.setDescription(flavorText);
+
+//                            adapter.notifyDataSetChanged(); // Notificar al adaptador que los datos han cambiado
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            Log.e(TAG, "Error al analizar la respuesta JSON del detalle del Pokémon: " + e.getMessage());
                         }
                     }
-            );
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e(TAG, "Error en la solicitud del detalle del Pokémon: " + error.toString());
+                    }
+                }
+        );
 
-            // Agregar la solicitud de búsqueda a la cola
-            requestQueue.add(searchRequest);
-        }
+        // Agregar la solicitud a la cola de solicitudes
+        requestQueue.add(request);
     }
 
+    private String processFlavorText(String flavorText) {
+        // Reemplazar secuencias de escape para manejar saltos de línea y otros caracteres especiales
+        flavorText = flavorText.replace("\n", " "); // Reemplazar saltos de línea con espacios
+        flavorText = flavorText.replace("\f", " "); // Eliminar saltos de página (\f)
+
+        // Eliminar caracteres adicionales no deseados (como espacios duplicados)
+        flavorText = flavorText.trim(); // Eliminar espacios en blanco al inicio y al final
+
+        return flavorText;
+    }
+
+    private void showPokemonDetailsPopup(Pokemon pokemon) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        builder.setTitle(pokemon.getName());
+
+        // Inflar el layout del popup personalizado
+        LayoutInflater inflater = requireActivity().getLayoutInflater();
+        View popupView = inflater.inflate(R.layout.popup_pokemon_details, null);
+
+        // Obtener referencias a los elementos del layout del popup
+        ImageView imageViewFront = popupView.findViewById(R.id.imageViewFront);
+        ImageView imageViewBack = popupView.findViewById(R.id.imageViewBack);
+        TextView textViewName = popupView.findViewById(R.id.textViewName);
+        TextView textViewDescription = popupView.findViewById(R.id.textViewDescription);
+
+        // Establecer el nombre del Pokémon en el TextView
+        textViewName.setText(pokemon.getName());
+        textViewDescription.setText(pokemon.getDescription());
+
+        // Cargar la imagen del Pokémon usando Glide
+        Glide.with(requireContext())
+                .load(pokemon.getUrl_front_default())
+//                .placeholder(R.drawable.placeholder_image) // Placeholder mientras se carga la imagen
+//                .error(R.drawable.error_image) // Imagen a mostrar si hay un error de carga
+                .into(imageViewFront);
+        Glide.with(requireContext())
+                .load(pokemon.getUrl_back_default())
+
+//                .placeholder(R.drawable.placeholder_image) // Placeholder mientras se carga la imagen
+//                .error(R.drawable.error_image) // Imagen a mostrar si hay un error de carga
+                .into(imageViewBack);
+
+        // Configurar el contenido del popup
+        builder.setView(popupView);
+
+        // Mostrar el popup
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+
+
+//    private void performSearch() {
+//        String searchTerm = searchEditText.getText().toString().toLowerCase().trim();
+//
+//        if (!searchTerm.isEmpty()) {
+//            // Limpiar la lista antes de realizar una nueva búsqueda
+//            pokemonList.clear();
+//            adapter.notifyDataSetChanged();
+//
+//            // Realizar la solicitud de búsqueda
+//            String searchUrl = BASE_URL + "pokemon/" + searchTerm;
+//
+//            JsonObjectRequest searchRequest = new JsonObjectRequest(
+//                    Request.Method.GET,
+//                    searchUrl,
+//                    null,
+//                    new Response.Listener<JSONObject>() {
+//                        @Override
+//                        public void onResponse(JSONObject response) {
+//                            try {
+//                                pokemonList.clear();
+//                                String name = response.getString("name");
+//                                name = name.substring(0, 1).toUpperCase() + name.substring(1);
+//                                String url = response.getString("url");
+//
+//                                System.out.println("name="+ name);
+//                                Pokemon pokemon = new Pokemon(0, name, url); // Ajusta el ID según sea necesario
+//
+//                                // Obtener detalles del Pokémon buscado
+//                                pokemonDetailRequest(pokemon);
+//
+//                                // Agregar el Pokémon a la lista y notificar al adaptador
+//                                pokemonList.add(pokemon);
+//                                adapter.notifyDataSetChanged();
+//                            } catch (JSONException e) {
+//                                e.printStackTrace();
+//                                Log.e(TAG, "Error al analizar la respuesta de búsqueda JSON: " + e.getMessage());
+//                            }
+//                        }
+//                    },
+//                    new Response.ErrorListener() {
+//                        @Override
+//                        public void onErrorResponse(VolleyError error) {
+//                            Log.e(TAG, "Error en la solicitud de búsqueda: " + error.toString());
+//                        }
+//                    }
+//            );
+//
+//            // Agregar la solicitud de búsqueda a la cola
+//            requestQueue.add(searchRequest);
+//        }
+//    }
 }

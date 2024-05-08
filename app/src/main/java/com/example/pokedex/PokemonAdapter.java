@@ -10,10 +10,6 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.List;
 
 public class PokemonAdapter extends BaseAdapter {
@@ -63,9 +59,9 @@ public class PokemonAdapter extends BaseAdapter {
         // Obtener la URL de la imagen del Pokémon (por defecto o brillante)
         String imageUrl;
         if (pokemon.isShiny()) {
-            imageUrl = pokemon.getUrl_shiny();
+            imageUrl = pokemon.getUrl_front_shiny();
         } else {
-            imageUrl = pokemon.getUrl_default();
+            imageUrl = pokemon.getUrl_front_default();
         }
 
         // Cargar la imagen utilizando Glide desde la URL

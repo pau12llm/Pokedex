@@ -1,30 +1,16 @@
 package com.example.pokedex;
 
-import static androidx.core.content.ContentProviderCompat.requireContext;
-
-import android.util.Log;
-
-import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
 
 public class Pokemon {
         private int number;
         private String name;
         private String url_API;
-        private String url_default;
-        private String url_shiny;
+        private String url_front_default;
+        private String url_front_shiny;
+        private String url_back_default;
+        private String url_back_shiny;
+        private String description;
         private boolean shiny;
         private RequestQueue requestQueue;
 
@@ -33,7 +19,7 @@ public class Pokemon {
                 this.name = name;
                 this.url_API = url_API;
                 this.shiny = false;
-                this.url_default = "https://www.pngall.com/wp-content/uploads/4/Pokeball-PNG-Free-Download.png";
+                this.url_front_default = "https://www.pngall.com/wp-content/uploads/4/Pokeball-PNG-Free-Download.png";
 
         }
 
@@ -61,20 +47,20 @@ public class Pokemon {
                 this.url_API = url_API;
         }
 
-        public String getUrl_default() {
-                return url_default;
+        public String getUrl_front_default() {
+                return url_front_default;
         }
 
-        public void setUrl_default(String url_default) {
-                this.url_default = url_default;
+        public void setUrl_front_default(String url_front_default) {
+                this.url_front_default = url_front_default;
         }
 
-        public String getUrl_shiny() {
-                return url_shiny;
+        public String getUrl_front_shiny() {
+                return url_front_shiny;
         }
 
-        public void setUrl_shiny(String url_shiny) {
-                this.url_shiny = url_shiny;
+        public void setUrl_front_shiny(String url_front_shiny) {
+                this.url_front_shiny = url_front_shiny;
         }
 
         public boolean isShiny() {
@@ -83,6 +69,30 @@ public class Pokemon {
 
         public void setShiny(boolean shiny) {
                 this.shiny = shiny;
+        }
+
+        public String getUrl_back_default() {
+                return url_back_default;
+        }
+
+        public void setUrl_back_default(String url_back_default) {
+                this.url_back_default = url_back_default;
+        }
+
+        public String getUrl_back_shiny() {
+                return url_back_shiny;
+        }
+
+        public void setUrl_back_shiny(String url_back_shiny) {
+                this.url_back_shiny = url_back_shiny;
+        }
+
+        public String getDescription() {
+                return description;
+        }
+
+        public void setDescription(String description) {
+                this.description = description;
         }
 
         // Método para extraer el número del Pokémon desde la URL
@@ -94,6 +104,15 @@ public class Pokemon {
                 }
         }
 
-
-
+        @Override
+        public String toString() {
+                return "\nPokemon{" +
+                        "number=" + number +
+                        ", name='" + name + '\'' +
+                        ", url_API='" + url_API + '\'' +
+                        ", url_default='" + url_front_default + '\'' +
+                        ", url_shiny='" + url_front_shiny + '\'' +
+                        ", shiny=" + shiny +
+                        '}';
+        }
 }
