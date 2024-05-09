@@ -21,5 +21,13 @@
     <string name="ShopTitle">LS POKEMON SHOP</string>
     <string name="back_button_description" />
 
+    <string name="hp_stats">Hp %1$d/255</string>
+    <string name="attack_stats">Attack %1$d/255</string>
+    <string name="defense_stats">Defense %1$d/255</string>
+    <string name="special_attack_stats">Special Attack %1$d/255</string>
+    <string name="special_defense_stats">Special Defense %1$d/255</string>
+    <string name="speed_stats">Speed %1$d/255</string>
+    
+
 
 </resources>
