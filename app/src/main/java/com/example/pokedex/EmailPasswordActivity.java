@@ -6,9 +6,12 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -32,11 +35,11 @@ public class EmailPasswordActivity extends AppCompatActivity {
 
     private static final String TAG = "EmailPassword";
     private FirebaseAuth mAuth;
-    FirebaseAuth fAuth;
-    FirebaseFirestore fStore;
+    private FirebaseAuth fAuth;
+    private FirebaseFirestore fStore;
     String userID;
 
-    EditText money,items;
+    EditText money, items;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,14 +48,23 @@ public class EmailPasswordActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
         fAuth = FirebaseAuth.getInstance();
-        fStore= FirebaseFirestore.getInstance();
+        fStore = FirebaseFirestore.getInstance();
+
+        ImageButton backButton = findViewById(R.id.buttonBack);
+
+        backButton.setOnClickListener(v -> {
+            // Manejar el clic en el botón de flecha
+            Intent intent = new Intent(EmailPasswordActivity.this, MainActivity.class);
+            startActivity(intent);
+            finish(); // Opcional, dependiendo de si quieres que la actividad actual permanezca en la pila de actividades
+        });
 
         EditText emailEditText = findViewById(R.id.editTextEmail);
         EditText passwordEditText = findViewById(R.id.editTextPassword);
         EditText nameEditText = findViewById(R.id.editTextName);
 
-        if(fAuth.getCurrentUser() != null){
-            startActivity(new Intent(getApplicationContext(),MainActivity.class));
+        if (fAuth.getCurrentUser() != null) {
+            startActivity(new Intent(getApplicationContext(), MainActivity.class));
             finish();
 
         }
@@ -72,7 +84,7 @@ public class EmailPasswordActivity extends AppCompatActivity {
         super.onStart();
         FirebaseUser currentUser = fAuth.getCurrentUser();
 
-        if(currentUser != null){
+        if (currentUser != null) {
             //reload();
         }
     }
@@ -85,16 +97,22 @@ public class EmailPasswordActivity extends AppCompatActivity {
                         userID = fAuth.getCurrentUser().getUid();
 
                         DocumentReference documentReference = fStore.collection("users").document(userID);
-                        Map<String,Object> user = new HashMap<>();
+                        Map<String, Object> user = new HashMap<>();
                         user.put("nombre", name); // Cambiado a "nombre" para mantener la consistencia
                         user.put("email", email);
                         user.put("money", 1000); // Añadido el campo "money"
                         user.put("items", new ArrayList<>()); // Añadido el campo "items" como una lista vacía
                         user.put("pokemons", new ArrayList<>()); // Añadido el campo "pokemons" como una lista vacía
 
-                        documentReference.set(user)
-                                .addOnSuccessListener(aVoid -> Log.d(TAG, "Perfil de usuario creado en Firestore"))
-                                .addOnFailureListener(e -> Log.w(TAG, "Error al crear el perfil de usuario en Firestore", e));
+                        documentReference.set(user).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()) {
+                                    Log.d(TAG, "User email address updated.");
+                                }
+                            }
+                        });
+                        ;
 
                         updateProfile(currentUser, name); // Llamar a updateProfile con el nombre
                         Toast.makeText(EmailPasswordActivity.this, "Te has registrado correctamente.",
@@ -120,7 +138,8 @@ public class EmailPasswordActivity extends AppCompatActivity {
     }
 
 
-    private void reload() { }
+    private void reload() {
+    }
 
     private void updateProfile(FirebaseUser user, String name) {
         UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()

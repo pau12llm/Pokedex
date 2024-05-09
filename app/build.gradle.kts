@@ -53,7 +53,7 @@ dependencies {
     implementation ("com.google.firebase:firebase-auth")
 
     // Firebase Firestore
-    implementation ("com.google.firebase:firebase-firestore")
+    implementation ("com.google.firebase:firebase-firestore:24.11.1")
     implementation ("androidx.viewpager2:viewpager2:1.0.0")
     //pokeAPI(retrofit)
     implementation ("com.squareup.retrofit2:retrofit:2.9.0")

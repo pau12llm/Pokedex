@@ -19,6 +19,7 @@
     <string name="masterball_price">100.000</string>
     <string name="buttonBuy">Buy</string>
     <string name="ShopTitle">LS POKEMON SHOP</string>
+    <string name="back_button_description" />
 
 
 </resources>
