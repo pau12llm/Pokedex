@@ -3,27 +3,20 @@ package com.example.pokedex;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
-import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.Firebase;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthMultiFactorException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 
@@ -34,7 +27,6 @@ import java.util.Map;
 public class EmailPasswordActivity extends AppCompatActivity {
 
     private static final String TAG = "EmailPassword";
-    private FirebaseAuth mAuth;
     private FirebaseAuth fAuth;
     private FirebaseFirestore fStore;
     String userID;
@@ -46,7 +38,6 @@ public class EmailPasswordActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_email_password);
 
-        mAuth = FirebaseAuth.getInstance();
         fAuth = FirebaseAuth.getInstance();
         fStore = FirebaseFirestore.getInstance();
 
@@ -79,13 +70,40 @@ public class EmailPasswordActivity extends AppCompatActivity {
         });
     }
 
+    void saveData(String name, String email, FirebaseUser currentUser) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        Map<String, Object> user = new HashMap<>();
+        user.put("nombre", name); // Cambiado a "nombre" para mantener la consistencia
+        user.put("email", email);
+        user.put("money", 1000);
+        user.put("items", new ArrayList<>()); // Añadido el campo "items" como una lista vacía
+        user.put("pokemons", new ArrayList<>()); // Añadido el campo "pokemons" como una lista vacía
+
+        db.collection("users")
+                .add(user)
+                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                    @Override
+                    public void onSuccess(DocumentReference documentReference) {
+                        Log.d("MainActivity", "DocumentSnapshot added with ID: " + documentReference.getId());
+                        updateProfile(currentUser, name);
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w("MainActivity", "Error adding document", e);
+                    }
+                });
+    }
+
     @Override
     protected void onStart() {
         super.onStart();
         FirebaseUser currentUser = fAuth.getCurrentUser();
 
         if (currentUser != null) {
-            //reload();
+            reload();
         }
     }
 
@@ -95,29 +113,9 @@ public class EmailPasswordActivity extends AppCompatActivity {
                     if (task.isSuccessful()) {
                         FirebaseUser currentUser = fAuth.getCurrentUser();
                         userID = fAuth.getCurrentUser().getUid();
+                        saveData(name, email, currentUser);
 
-                        DocumentReference documentReference = fStore.collection("users").document(userID);
-                        Map<String, Object> user = new HashMap<>();
-                        user.put("nombre", name); // Cambiado a "nombre" para mantener la consistencia
-                        user.put("email", email);
-                        user.put("money", 1000); // Añadido el campo "money"
-                        user.put("items", new ArrayList<>()); // Añadido el campo "items" como una lista vacía
-                        user.put("pokemons", new ArrayList<>()); // Añadido el campo "pokemons" como una lista vacía
 
-                        documentReference.set(user).addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                if (task.isSuccessful()) {
-                                    Log.d(TAG, "User email address updated.");
-                                }
-                            }
-                        });
-                        ;
-
-                        updateProfile(currentUser, name); // Llamar a updateProfile con el nombre
-                        Toast.makeText(EmailPasswordActivity.this, "Te has registrado correctamente.",
-                                Toast.LENGTH_SHORT).show();
-                        finish();
                     } else {
                         // Si el registro falla, muestra un mensaje al usuario
                         if (task.getException() instanceof FirebaseAuthWeakPasswordException) {
@@ -150,6 +148,9 @@ public class EmailPasswordActivity extends AppCompatActivity {
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         Log.d(TAG, "User profile updated.");
+                        Toast.makeText(EmailPasswordActivity.this, "Te has registrado correctamente.",
+                                Toast.LENGTH_SHORT).show();
+                        finish();
                     }
                 });
     }
