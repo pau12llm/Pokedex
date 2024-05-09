@@ -16,6 +16,7 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 
@@ -55,6 +56,12 @@ public class PokedexFragment extends Fragment {
     private final int limit = 15;
     private boolean isLoading = false;
 
+    private ProgressBar hpBar;
+    private ProgressBar attackBar;
+    private ProgressBar defenseBar;
+    private ProgressBar specialAttackBar;
+    private ProgressBar specialDefenseBar;
+    private ProgressBar speedBar;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -219,10 +226,45 @@ public class PokedexFragment extends Fragment {
                             String defaultBackImageUrl = sprites.getString("back_default");
                             String shinyBackImageUrl = sprites.getString("back_shiny");
 
+                            JSONArray stats = response.getJSONArray("stats");
+
+                            int hp=0;
+                            int attack=0;
+                            int defense=0;
+                            int special_attack=0;
+                            int special_defense=0;
+                            int speed=0;
+
+                            for (int i = 0; i < stats.length(); i++) {
+                                JSONObject entry = stats.getJSONObject(i);
+                                JSONObject stat = entry.getJSONObject("stat");
+                                String statName = stat.getString("name");
+
+                                if (statName.equals("hp")) {
+                                    hp = entry.getInt("base_stat");
+                                }if (statName.equals("attack")) {
+                                    attack = entry.getInt("base_stat");
+                                }if (statName.equals("defense")) {
+                                    defense = entry.getInt("base_stat");
+                                }if (statName.equals("special-attack")) {
+                                    special_attack = entry.getInt("base_stat");
+                                }if (statName.equals("special-defense")) {
+                                    special_defense = entry.getInt("base_stat");
+                                }if (statName.equals("speed")) {
+                                    speed = entry.getInt("base_stat");
+                                }
+                            }
+//Max 255
                             pokemon.setUrl_front_default(defaultImageUrl);
                             pokemon.setUrl_front_shiny(shinyImageUrl);
                             pokemon.setUrl_back_default(defaultBackImageUrl);
-                            pokemon.setUrl_back_shiny(shinyBackImageUrl);
+                            pokemon.setHp(hp);
+                            pokemon.setAttack(attack);
+                            pokemon.setDefense(defense);
+                            pokemon.setSpecial_attack(special_attack);
+                            pokemon.setSpecial_defense(special_defense);
+                            pokemon.setSpeed(speed);
+
                             pokemonDetailInfoRequest(pokemon);
                             adapter.notifyDataSetChanged(); // Notificar al adaptador que los datos han cambiado
                         } catch (JSONException e) {
@@ -313,25 +355,58 @@ public class PokedexFragment extends Fragment {
         // Obtener referencias a los elementos del layout del popup
         ImageView imageViewFront = popupView.findViewById(R.id.imageViewFront);
         ImageView imageViewBack = popupView.findViewById(R.id.imageViewBack);
-        TextView textViewName = popupView.findViewById(R.id.textViewName);
+//        TextView textViewName = popupView.findViewById(R.id.textViewName);
         TextView textViewDescription = popupView.findViewById(R.id.textViewDescription);
+        TextView textViewHp = popupView.findViewById(R.id.textViewHp);
+        TextView textViewAttack = popupView.findViewById(R.id.textViewAttack);
+        TextView textViewDefense = popupView.findViewById(R.id.textViewDefense);
+        TextView textViewSpecialAttack = popupView.findViewById(R.id.textViewSpecialAttack);
+        TextView textViewSpecialDefense = popupView.findViewById(R.id.textViewSpecialDefense);
+        TextView textViewSpeed = popupView.findViewById(R.id.textViewSpeed);
 
         // Establecer el nombre del Pokémon en el TextView
-        textViewName.setText(pokemon.getName());
+//        textViewName.setText(pokemon.getName());
         textViewDescription.setText(pokemon.getDescription());
+
+        //Actualiza progresBar stats
+        String hpText = getString(R.string.hp_stats, pokemon.getHp());
+        textViewHp.setText(hpText );
+        String attackText = getString(R.string.attack_stats, pokemon.getAttack());
+        textViewAttack.setText(attackText);
+        String defenseText = getString(R.string.defense_stats, pokemon.getDefense());
+        textViewDefense.setText(defenseText);
+        String specialAttackText = getString(R.string.special_attack_stats, pokemon.getSpecial_attack());
+        textViewSpecialAttack.setText(specialAttackText);
+        String specialDefenseText = getString(R.string.special_defense_stats, pokemon.getSpecial_defense());
+        textViewSpecialDefense.setText(specialDefenseText);
+        String speedText = getString(R.string.speed_stats, pokemon.getSpeed());
+        textViewSpeed.setText(speedText);
+
+        hpBar = popupView.findViewById(R.id.hpBar);
+        attackBar = popupView.findViewById(R.id.attackBar);
+        defenseBar = popupView.findViewById(R.id.defenseBar);
+        specialAttackBar = popupView.findViewById(R.id.specialAttackBar);
+        specialDefenseBar = popupView.findViewById(R.id.specialDefenseBar);
+        speedBar = popupView.findViewById(R.id.speedBar);
+
+        // Actualizar el progreso del ProgressBar
+        hpBar.setProgress(pokemon.getHp());
+        attackBar.setProgress(pokemon.getAttack());
+        defenseBar.setProgress(pokemon.getDefense());
+        specialAttackBar.setProgress(pokemon.getSpecial_attack());
+        specialDefenseBar.setProgress(pokemon.getSpecial_defense());
+        speedBar.setProgress(pokemon.getSpeed());
+
 
         // Cargar la imagen del Pokémon usando Glide
         Glide.with(requireContext())
                 .load(pokemon.getUrl_front_default())
-//                .placeholder(R.drawable.placeholder_image) // Placeholder mientras se carga la imagen
-//                .error(R.drawable.error_image) // Imagen a mostrar si hay un error de carga
                 .into(imageViewFront);
         Glide.with(requireContext())
                 .load(pokemon.getUrl_back_default())
-
-//                .placeholder(R.drawable.placeholder_image) // Placeholder mientras se carga la imagen
-//                .error(R.drawable.error_image) // Imagen a mostrar si hay un error de carga
                 .into(imageViewBack);
+
+        System.out.println("testeo==" + pokemon.toString());
 
         // Configurar el contenido del popup
         builder.setView(popupView);
