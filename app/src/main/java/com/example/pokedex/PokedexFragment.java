@@ -95,17 +95,73 @@ public class PokedexFragment extends Fragment {
             @Override
             public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
                 if (actionId == EditorInfo.IME_ACTION_SEARCH || actionId == EditorInfo.IME_ACTION_DONE ||
-                        keyEvent != null && keyEvent.getAction() == KeyEvent.ACTION_DOWN &&
-                                keyEvent.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
+                        (keyEvent != null && keyEvent.getAction() == KeyEvent.ACTION_DOWN &&
+                                keyEvent.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
                     // Acción a realizar cuando se presiona la tecla "Intro"
-                    System.out.println("pokelist =" +pokemonList.toString());
-
-//                    performSearch(); // Por ejemplo, una función para iniciar la búsqueda
+                    String query = searchEditText.getText().toString().trim(); // Obtener el texto y eliminar espacios en blanco alrededor
+                    if (!query.isEmpty()) {
+                        Log.d(TAG, "Search query in onEditorAction: " + query); // Registro del nombre de búsqueda
+                        pokemonListRequest(query);
+                    } else {
+                        Log.d(TAG, "Search query is empty in onEditorAction");
+                    }
                     return true; // Indicar que se ha manejado el evento
                 }
                 return false; // Devolver false para permitir que el sistema maneje el evento también
             }
+            private void pokemonListRequest(String query) {
+                if (isLoading) {
+                    return; // Evitar solicitudes duplicadas mientras se carga
+                }
+                isLoading = true;
+
+                String pokemonUrl = BASE_URL + "pokemon/" + query.toLowerCase();
+                Log.e(TAG, "Error al analizar la respuesta JSON:"+pokemonUrl);
+                JsonObjectRequest request = new JsonObjectRequest(
+                        Request.Method.GET,
+                        pokemonUrl,
+                        null,
+                        new Response.Listener<JSONObject>() {
+                            @Override
+                            public void onResponse(JSONObject response) {
+                                try {
+                                    Log.e(TAG, "Error al analizar la respuesta JSON response:"+response);
+                                    // Obtener los detalles del Pokémon desde la respuesta JSON
+                                    String name = response.getString("name");
+                                    String url_API = response.getString("url"); // Ajustar esto según la estructura de la respuesta real
+                                    int number = response.getInt("id"); // Ajustar esto según la estructura de la respuesta real
+
+                                    Pokemon pokemon = new Pokemon(number, name, url_API);
+
+                                    // Agregar el Pokémon a la lista
+                                    pokemonList.add(pokemon);
+
+                                    // Notificar al adaptador que los datos han cambiado
+                                    adapter.notifyDataSetChanged();
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                    Log.e(TAG, "Error al analizar la respuesta JSON: " + e.getMessage());
+                                }
+                                isLoading = false;
+                            }
+                        },
+                        new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                isLoading = false;
+                                Log.e(TAG, "Error en la solicitud: " + error.toString());
+                            }
+                        }
+                );
+
+                // Agregar la solicitud a la cola de solicitudes
+                requestQueue.add(request);
+            }
+
+
+
         });
+
 
         // Configurar el listener para el clic en los elementos del GridView
 //        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
