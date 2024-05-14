@@ -106,6 +106,8 @@ public class PokedexFragment extends Fragment {
                         Log.d(TAG, "Search query in onEditorAction: " + query); // Registro del nombre de búsqueda
                         pokemonListRequest(query);
                     } else {
+                        adapter.setPokemonList(pokemonList);
+                        adapter.notifyDataSetChanged();
                         Log.d(TAG, "Search query is empty in onEditorAction");
                     }
                     return true; // Indicar que se ha manejado el evento
@@ -168,25 +170,27 @@ public class PokedexFragment extends Fragment {
                         try {
 
                             JSONArray abilitiesArray = response.getJSONArray("forms");
+                            int idPokemon = response.getInt("id");
 
                             for (int i = 0; i < abilitiesArray.length(); i++) {
                                 JSONObject abilityObject = abilitiesArray.getJSONObject(i);
 
                                 // Obtener el nombre de la habilidad desde el objeto de habilidad
                                 String abilityName = abilityObject.getString("name");
-                                String abilityUrl = abilityObject.getString("url");
+                                String abilityUrl = "https://pokeapi.co/api/v2/pokemon/"+idPokemon+"/";
                                 System.out.println("abilityName="+abilityName);
                                 System.out.println("abilityUrl="+abilityUrl);
 
                                 // Aquí puedes manejar los datos de la habilidad según tus necesidades
                                 // Por ejemplo, crear un objeto Pokemon con la información de la habilidad
                                 Pokemon pokemon = new Pokemon(151, abilityName, abilityUrl);
+                                pokemonDetailRequest(pokemon);
 
-
+                                System.out.println("pokeimg=="+pokemon.getUrl_front_default());
                                 // Agregar el Pokémon a la lista
-                                //pokemonListSearch = new ArrayList<>();
-                                //pokemonListSearch.clear();
-                                //pokemonListSearch.add(pokemon);
+                                pokemonListSearch = new ArrayList<>();
+                                pokemonListSearch.clear();
+                                pokemonListSearch.add(pokemon);
                             }
 
 
@@ -286,7 +290,7 @@ public class PokedexFragment extends Fragment {
     }
 
 
-    private void pokemonDetailRequest(@NonNull Pokemon pokemon) {
+    private void pokemonDetailRequest(@NonNull final Pokemon pokemon) {
         JsonObjectRequest request = new JsonObjectRequest(
                 Request.Method.GET,
                 pokemon.getUrl_API(),
