@@ -3,6 +3,7 @@ package com.example.pokedex;
 import android.app.AlertDialog;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
@@ -50,6 +51,7 @@ public class PokedexFragment extends Fragment {
     private GridView gridView;
     private PokemonAdapter adapter;
     private List<Pokemon> pokemonList;
+    private List<Pokemon> pokemonListSearch;
 
     private EditText searchEditText;
 
@@ -110,54 +112,7 @@ public class PokedexFragment extends Fragment {
                 }
                 return false; // Devolver false para permitir que el sistema maneje el evento también
             }
-            private void pokemonListRequest(String query) {
-                if (isLoading) {
-                    return; // Evitar solicitudes duplicadas mientras se carga
-                }
-                isLoading = true;
 
-                String pokemonUrl = BASE_URL + "pokemon/" + query.toLowerCase();
-                Log.e(TAG, "Error al analizar la respuesta JSON:"+pokemonUrl);
-                JsonObjectRequest request = new JsonObjectRequest(
-                        Request.Method.GET,
-                        pokemonUrl,
-                        null,
-                        new Response.Listener<JSONObject>() {
-                            @Override
-                            public void onResponse(JSONObject response) {
-                                try {
-                                    Log.e(TAG, "Error al analizar la respuesta JSON response:"+response);
-                                    // Obtener los detalles del Pokémon desde la respuesta JSON
-                                    String name = response.getString("name");
-                                    String url_API = response.getString("url"); // Ajustar esto según la estructura de la respuesta real
-                                    int number = response.getInt("id"); // Ajustar esto según la estructura de la respuesta real
-
-                                    Pokemon pokemon = new Pokemon(number, name, url_API);
-
-                                    // Agregar el Pokémon a la lista
-                                    pokemonList.add(pokemon);
-
-                                    // Notificar al adaptador que los datos han cambiado
-                                    adapter.notifyDataSetChanged();
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                    Log.e(TAG, "Error al analizar la respuesta JSON: " + e.getMessage());
-                                }
-                                isLoading = false;
-                            }
-                        },
-                        new Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                isLoading = false;
-                                Log.e(TAG, "Error en la solicitud: " + error.toString());
-                            }
-                        }
-                );
-
-                // Agregar la solicitud a la cola de solicitudes
-                requestQueue.add(request);
-            }
 
 
 
@@ -194,6 +149,69 @@ public class PokedexFragment extends Fragment {
         return view;
     }
 
+
+    private void pokemonListRequest(String query) {
+        if (isLoading) {
+            return; // Evitar solicitudes duplicadas mientras se carga
+        }
+        isLoading = true;
+
+        String pokemonUrl = BASE_URL + "pokemon/" + query.toLowerCase();
+        System.out.println( " analizar la respuesta JSON 0:"+pokemonUrl);
+        JsonObjectRequest request = new JsonObjectRequest(
+                Request.Method.GET,
+                pokemonUrl,
+                null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+
+                            JSONArray abilitiesArray = response.getJSONArray("forms");
+
+                            for (int i = 0; i < abilitiesArray.length(); i++) {
+                                JSONObject abilityObject = abilitiesArray.getJSONObject(i);
+
+                                // Obtener el nombre de la habilidad desde el objeto de habilidad
+                                String abilityName = abilityObject.getString("name");
+                                String abilityUrl = abilityObject.getString("url");
+                                System.out.println("abilityName="+abilityName);
+                                System.out.println("abilityUrl="+abilityUrl);
+
+                                // Aquí puedes manejar los datos de la habilidad según tus necesidades
+                                // Por ejemplo, crear un objeto Pokemon con la información de la habilidad
+                                Pokemon pokemon = new Pokemon(151, abilityName, abilityUrl);
+
+
+                                // Agregar el Pokémon a la lista
+                                //pokemonListSearch = new ArrayList<>();
+                                //pokemonListSearch.clear();
+                                //pokemonListSearch.add(pokemon);
+                            }
+
+
+                            // Notificar al adaptador que los datos han cambiado
+                            adapter.setPokemonList(pokemonListSearch);
+                            adapter.notifyDataSetChanged();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            System.out.println("Error al analizar la respuesta JSON 2: " + e.getMessage());
+                        }
+                        isLoading = false;
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        isLoading = false;
+                        Log.e(TAG, "Error en la solicitud: " + error.toString());
+                    }
+                }
+        );
+
+        // Agregar la solicitud a la cola de solicitudes
+        requestQueue.add(request);
+    }
 
     private void pokemonListRequest() {
         if (isLoading) {
@@ -268,7 +286,7 @@ public class PokedexFragment extends Fragment {
     }
 
 
-    private void pokemonDetailRequest(final Pokemon pokemon) {
+    private void pokemonDetailRequest(@NonNull Pokemon pokemon) {
         JsonObjectRequest request = new JsonObjectRequest(
                 Request.Method.GET,
                 pokemon.getUrl_API(),

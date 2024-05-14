@@ -27,6 +27,14 @@ public class PokemonAdapter extends BaseAdapter {
         this.filteredPokemonList = new ArrayList<>(pokemonList);
     }
 
+    public List<Pokemon> getPokemonList() {
+        return pokemonList;
+    }
+
+    public void setPokemonList(List<Pokemon> pokemonList) {
+        this.pokemonList = pokemonList;
+    }
+
     @Override
     public int getCount() {
         return pokemonList.size();
