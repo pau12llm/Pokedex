@@ -41,6 +41,7 @@ import java.util.List;
 
  * create an instance of this fragment.
  */
+
 public class PokedexFragment extends Fragment {
     private static final String TAG = "PokedexFragment";
     private static final String BASE_URL = "https://pokeapi.co/api/v2/";
