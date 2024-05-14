@@ -5,16 +5,19 @@
     android:layout_height="match_parent"
     tools:context=".TrainerFragment">
 
+    <!-- Fondo de la imagen -->
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="532dp"
-        android:layout_height="970dp"
-        android:layout_gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
         android:src="@drawable/trainer" />
 
+    <!-- Contenido de la interfaz de usuario -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -22,28 +25,20 @@
             android:padding="16dp">
 
             <TextView
-                android:id="@+id/trainerName"
+                android:id="@+id/userNameTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Trainer Name: "
                 android:textSize="18sp"
-                android:layout_marginBottom="8dp"/>
+                android:layout_marginBottom="8dp" />
 
             <TextView
-                android:id="@+id/trainerMoney"
+                android:id="@+id/userMoneyTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Money: €0"
+                android:text="Money: "
                 android:textSize="16sp"
-                android:layout_marginBottom="8dp"/>
-
-            <TextView
-                android:id="@+id/trainerItems"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Items"
-                android:textSize="16sp"
-                android:layout_marginBottom="8dp"/>
+                android:layout_marginBottom="8dp" />
 
             <EditText
                 android:id="@+id/editText"
@@ -59,8 +54,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:divider="@android:color/darker_gray"
-                android:dividerHeight="1dp"/>
-
+                android:dividerHeight="1dp" />
         </LinearLayout>
     </ScrollView>
+
+    <!-- Botón de cerrar sesión -->
+    <Button
+        android:id="@+id/logoutButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Cerrar Sesión"
+        android:layout_gravity="bottom|center_horizontal" />
+
 </FrameLayout>

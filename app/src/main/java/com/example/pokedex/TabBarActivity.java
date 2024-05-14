@@ -60,7 +60,7 @@ public class TabBarActivity extends AppCompatActivity {
                 case 0:
                     return new PokedexFragment();
                 case 1:
-                    //return new TrainerFragment();
+                    return new TrainerFragment();
                 case 2:
                     return new ShopFragment();
                 default:

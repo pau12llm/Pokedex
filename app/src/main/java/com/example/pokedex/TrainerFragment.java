@@ -1,121 +1,112 @@
 package com.example.pokedex;
 
+import android.content.Intent;
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
-import com.google.android.gms.tasks.OnSuccessListener;
+import android.widget.Toast;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.List;
-//e
 public class TrainerFragment extends Fragment {
-    String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-    DocumentReference entrenadorDoc = FirebaseFirestore.getInstance().collection("trainers").document(userId);
 
-    private TextView trainerNameTextView;
-    private TextView trainerMoneyTextView;
-    private RecyclerView itemRecyclerView;
-    private RecyclerView pokemonRecyclerView;
-    private List<Pokemon> pokemonList;
+    private static final String TAG = "TrainerFragment";
 
-    private PokemonAdapter pokemonAdapter;
-    private RequestQueue requestQueue;
+    // UI components
+    private TextView userNameTextView;
+    private TextView userMoneyTextView;
 
-    public TrainerFragment() {
-    }
+    // Firebase
+    private FirebaseAuth mAuth;
+    private FirebaseFirestore db;
+    private String loggedEmail;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_trainer, container, false);
 
-        entrenadorDoc.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                String nombreEntrenador = documentSnapshot.getString("nombre");
-            }
-        });
+        // Initialize Firebase Authentication
+        mAuth = FirebaseAuth.getInstance();
+        // Initialize Cloud Firestore
+        db = FirebaseFirestore.getInstance();
+
+        // Initialize UI views
+        userNameTextView = view.findViewById(R.id.userNameTextView);
+        userMoneyTextView = view.findViewById(R.id.userMoneyTextView);
+        Button logoutButton = view.findViewById(R.id.logoutButton);
+
+        // Get currently authenticated user
+        FirebaseUser user = mAuth.getCurrentUser();
+
+        if (user != null) {
+            loggedEmail = user.getEmail();
+            // Set click listener for logout button
+            logoutButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // Sign out the user
+                    mAuth.signOut();
+                    // Navigate to login screen
+                    startActivity(new Intent(getActivity(), MainActivity.class));
+                    // Finish current activity
+                    getActivity().finish();
+                }
+            });
+        } else {
+            Toast.makeText(getActivity(), "No user found!", Toast.LENGTH_SHORT).show();
+        }
 
         return view;
     }
 
-    private void fetchPokemonData() {
-        String apiEndpoint = "https://pokeapi.co/api/v2/pokemon?limit=151";
-
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, apiEndpoint, null, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                try {
-                    JSONArray results = response.getJSONArray("results");
-
-                    for (int i = 0; i < results.length(); i++) {
-                        JSONObject pokemon = results.getJSONObject(i);
-
-                        String name = pokemon.getString("name");
-                        String url = pokemon.getString("url");
-
-                        fetchPokemonDetails(name, url, i);
-                    }
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                error.printStackTrace();
-            }
-        });
-
-        requestQueue.add(jsonObjectRequest);
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (loggedEmail != null) {
+            getUserData();
+        }
     }
 
-    private void fetchPokemonDetails(String name, String url, int index) {
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                try {
-                    JSONArray types = response.getJSONArray("types");
-                    JSONObject type = types.getJSONObject(0);
-                    String typeName = type.getJSONObject("type").getString("name");
+    private void getUserData() {
+        db.collection("users")
+                .document(loggedEmail)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot documentSnapshot = task.getResult();
+                            if (documentSnapshot != null && documentSnapshot.exists()) {
+                                String name = documentSnapshot.getString("nombre");
+                                long money = documentSnapshot.getLong("money");
 
-                    int id = response.getInt("id");
-                    String imageUrl = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/"+ id +".png";
-
-                    //pokemonList.add(new Pokemon(name, typeName, imageUrl));
-                    //pokemonAdapter.notifyItemInserted(index);
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                error.printStackTrace();
-            }
-        });
-
-        requestQueue.add(jsonObjectRequest);
+                                userNameTextView.setText("Trainer Name: " + name);
+                                userMoneyTextView.setText("Money: " + String.valueOf(money));
+                            }
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e(TAG, "Error getting user data: " + e.getMessage());
+                    }
+                });
     }
 }
