@@ -26,7 +26,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
-
+//e
 public class TrainerFragment extends Fragment {
     String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
     DocumentReference entrenadorDoc = FirebaseFirestore.getInstance().collection("trainers").document(userId);
