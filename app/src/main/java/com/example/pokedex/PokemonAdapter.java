@@ -1,6 +1,7 @@
 package com.example.pokedex;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,15 +11,27 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class PokemonAdapter extends BaseAdapter {
 
     private List<Pokemon> pokemonList;
+    private List<Pokemon> filteredPokemonList= pokemonList;
+    private static final String TAG = "PokedexFragment";
     private Context context;
 
     public PokemonAdapter(Context context, List<Pokemon> pokemonList) {
         this.context = context;
+        this.pokemonList = pokemonList;
+        this.filteredPokemonList = new ArrayList<>(pokemonList);
+    }
+
+    public List<Pokemon> getPokemonList() {
+        return pokemonList;
+    }
+
+    public void setPokemonList(List<Pokemon> pokemonList) {
         this.pokemonList = pokemonList;
     }
 
@@ -31,11 +44,14 @@ public class PokemonAdapter extends BaseAdapter {
     public Object getItem(int position) {
         return pokemonList.get(position);
     }
+    // Método para filtrar la lista de Pokémon por nombre
+
 
     @Override
     public long getItemId(int position) {
         return position;
     }
+
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {

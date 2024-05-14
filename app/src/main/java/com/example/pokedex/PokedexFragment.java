@@ -3,6 +3,7 @@ package com.example.pokedex;
 import android.app.AlertDialog;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
@@ -41,6 +42,7 @@ import java.util.List;
 
  * create an instance of this fragment.
  */
+
 public class PokedexFragment extends Fragment {
     private static final String TAG = "PokedexFragment";
     private static final String BASE_URL = "https://pokeapi.co/api/v2/";
@@ -49,6 +51,7 @@ public class PokedexFragment extends Fragment {
     private GridView gridView;
     private PokemonAdapter adapter;
     private List<Pokemon> pokemonList;
+    private List<Pokemon> pokemonListSearch;
 
     private EditText searchEditText;
 
@@ -95,17 +98,26 @@ public class PokedexFragment extends Fragment {
             @Override
             public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
                 if (actionId == EditorInfo.IME_ACTION_SEARCH || actionId == EditorInfo.IME_ACTION_DONE ||
-                        keyEvent != null && keyEvent.getAction() == KeyEvent.ACTION_DOWN &&
-                                keyEvent.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
+                        (keyEvent != null && keyEvent.getAction() == KeyEvent.ACTION_DOWN &&
+                                keyEvent.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
                     // Acción a realizar cuando se presiona la tecla "Intro"
-                    System.out.println("pokelist =" +pokemonList.toString());
-
-//                    performSearch(); // Por ejemplo, una función para iniciar la búsqueda
+                    String query = searchEditText.getText().toString().trim(); // Obtener el texto y eliminar espacios en blanco alrededor
+                    if (!query.isEmpty()) {
+                        Log.d(TAG, "Search query in onEditorAction: " + query); // Registro del nombre de búsqueda
+                        pokemonListRequest(query);
+                    } else {
+                        Log.d(TAG, "Search query is empty in onEditorAction");
+                    }
                     return true; // Indicar que se ha manejado el evento
                 }
                 return false; // Devolver false para permitir que el sistema maneje el evento también
             }
+
+
+
+
         });
+
 
         // Configurar el listener para el clic en los elementos del GridView
 //        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -137,6 +149,69 @@ public class PokedexFragment extends Fragment {
         return view;
     }
 
+
+    private void pokemonListRequest(String query) {
+        if (isLoading) {
+            return; // Evitar solicitudes duplicadas mientras se carga
+        }
+        isLoading = true;
+
+        String pokemonUrl = BASE_URL + "pokemon/" + query.toLowerCase();
+        System.out.println( " analizar la respuesta JSON 0:"+pokemonUrl);
+        JsonObjectRequest request = new JsonObjectRequest(
+                Request.Method.GET,
+                pokemonUrl,
+                null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+
+                            JSONArray abilitiesArray = response.getJSONArray("forms");
+
+                            for (int i = 0; i < abilitiesArray.length(); i++) {
+                                JSONObject abilityObject = abilitiesArray.getJSONObject(i);
+
+                                // Obtener el nombre de la habilidad desde el objeto de habilidad
+                                String abilityName = abilityObject.getString("name");
+                                String abilityUrl = abilityObject.getString("url");
+                                System.out.println("abilityName="+abilityName);
+                                System.out.println("abilityUrl="+abilityUrl);
+
+                                // Aquí puedes manejar los datos de la habilidad según tus necesidades
+                                // Por ejemplo, crear un objeto Pokemon con la información de la habilidad
+                                Pokemon pokemon = new Pokemon(151, abilityName, abilityUrl);
+
+
+                                // Agregar el Pokémon a la lista
+                                //pokemonListSearch = new ArrayList<>();
+                                //pokemonListSearch.clear();
+                                //pokemonListSearch.add(pokemon);
+                            }
+
+
+                            // Notificar al adaptador que los datos han cambiado
+                            adapter.setPokemonList(pokemonListSearch);
+                            adapter.notifyDataSetChanged();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            System.out.println("Error al analizar la respuesta JSON 2: " + e.getMessage());
+                        }
+                        isLoading = false;
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        isLoading = false;
+                        Log.e(TAG, "Error en la solicitud: " + error.toString());
+                    }
+                }
+        );
+
+        // Agregar la solicitud a la cola de solicitudes
+        requestQueue.add(request);
+    }
 
     private void pokemonListRequest() {
         if (isLoading) {
@@ -211,7 +286,7 @@ public class PokedexFragment extends Fragment {
     }
 
 
-    private void pokemonDetailRequest(final Pokemon pokemon) {
+    private void pokemonDetailRequest(@NonNull Pokemon pokemon) {
         JsonObjectRequest request = new JsonObjectRequest(
                 Request.Method.GET,
                 pokemon.getUrl_API(),
