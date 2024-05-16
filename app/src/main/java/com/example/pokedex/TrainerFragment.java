@@ -20,6 +20,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
+
+import java.util.List;
 
 public class TrainerFragment extends Fragment {
 
@@ -83,21 +86,21 @@ public class TrainerFragment extends Fragment {
 
     private void getUserData() {
         db.collection("users")
-                .document(userID)
                 .get()
-                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
-                            DocumentSnapshot documentSnapshot = task.getResult();
-                            if (documentSnapshot != null && documentSnapshot.exists()) {
-                                String name = documentSnapshot.getString("nombre");
-                                Long money = documentSnapshot.getLong("money");
+                            List<DocumentSnapshot> documents = task.getResult().getDocuments();
+                            for (DocumentSnapshot document : documents) {
+                                if (document.getId().equals(userID)) {
+                                    String name = document.getString("nombre");
+                                    Long money = document.getLong("money");
 
-                                userNameTextView.setText("Trainer Name: " + name);
-                                userMoneyTextView.setText("Money: " + String.valueOf(money));
-                            } else {
-                                Log.d(TAG, "No such document");
+                                    userNameTextView.setText("Trainer Name: " + name);
+                                    userMoneyTextView.setText("Money: " + String.valueOf(money));
+                                    break;
+                                }
                             }
                         } else {
                             Log.d(TAG, "get failed with ", task.getException());
