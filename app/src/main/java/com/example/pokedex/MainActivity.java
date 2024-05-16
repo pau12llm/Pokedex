@@ -66,7 +66,6 @@ public class MainActivity extends AppCompatActivity {
         if (currentUser != null) {
             startActivity(new Intent(MainActivity.this, TabBarActivity.class));
             finish(); // Finaliza la actividad actual para que el usuario no pueda volver atrás con el botón de retroceso
-
         }
     }
 
@@ -76,23 +75,23 @@ public class MainActivity extends AppCompatActivity {
     private void signIn(String email, String password) {
 
         mAuth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            Log.d(TAG, "signInWithEmail:success");
-                            startActivity(new Intent(MainActivity.this, TabBarActivity.class));
-                            Toast.makeText(MainActivity.this, "Authentication ok.",
-                                    Toast.LENGTH_LONG).show();
-                        } else {
-                            // If sign in fails, display a message to the user.
-                            Log.w(TAG, "signInWithEmail:failure", task.getException());
-                            Toast.makeText(MainActivity.this, "Authentication failed.",
-                                    Toast.LENGTH_LONG).show();
+            .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                @Override
+                public void onComplete(@NonNull Task<AuthResult> task) {
+                    if (task.isSuccessful()) {
+                        // Sign in success, update UI with the signed-in user's information
+                        Log.d(TAG, "signInWithEmail:success");
+                        startActivity(new Intent(MainActivity.this, TabBarActivity.class));
+                        Toast.makeText(MainActivity.this, "Authentication ok.",
+                                Toast.LENGTH_LONG).show();
+                    } else {
+                        // If sign in fails, display a message to the user.
+                        Log.w(TAG, "signInWithEmail:failure", task.getException());
+                        Toast.makeText(MainActivity.this, "Authentication failed.",
+                                Toast.LENGTH_LONG).show();
 
-                        }
                     }
-                });
+                }
+            });
     }
 }

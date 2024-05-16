@@ -1,64 +1,91 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="16dp">
+
+    <ImageView
+        android:id="@+id/pokeballImg"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_gravity="end"
+        tools:srcCompat="@tools:sample/avatars" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="horizontal"
         android:gravity="center_horizontal"
-        >
+        android:orientation="horizontal">
 
-        <!-- Imagen del Pokémon -->
         <ImageView
             android:id="@+id/imageViewFront"
             android:layout_width="150dp"
             android:layout_height="150dp"
-            android:scaleType="fitCenter"
             android:adjustViewBounds="true"
-            tools:srcCompat="@tools:sample/avatars"/>
+            android:scaleType="fitCenter"
+            tools:srcCompat="@tools:sample/avatars" />
+
         <ImageView
             android:id="@+id/imageViewBack"
             android:layout_width="150dp"
             android:layout_height="150dp"
-            android:scaleType="fitCenter"
             android:adjustViewBounds="true"
-            tools:srcCompat="@tools:sample/avatars"/>
-        <!-- Nombre del Pokémon -->
+            android:scaleType="fitCenter"
+            tools:srcCompat="@tools:sample/avatars" />
 
     </LinearLayout>
-<!--    <TextView-->
-<!--        android:id="@+id/textViewName"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:textSize="18sp"-->
-<!--        android:textStyle="bold"-->
-<!--        android:gravity="center"-->
-<!--        android:paddingTop="8dp"-->
-<!--        android:text="Pokemon Name" />-->
+
+    <TextView
+        android:id="@+id/textViewName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingTop="8dp"
+        android:text="Description"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
     <TextView
         android:id="@+id/textViewDescription"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="left"
+        android:paddingBottom="10dp"
+        android:text="Pokemon Name"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/titleAbility"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="Ability"
         android:textSize="16sp"
+        android:textStyle="bold"
+        android:visibility="invisible" />
+
+    <TextView
+        android:id="@+id/textViewAbility"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:gravity="left"
         android:paddingTop="8dp"
         android:paddingBottom="10dp"
-        android:text="Pokemon Name" />
+        android:text=""
+        android:textSize="14sp"
+        android:visibility="invisible" />
 
     <TextView
         android:id="@+id/titleState"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="18sp"
-        android:textStyle="bold"
         android:gravity="center"
         android:paddingTop="8dp"
-        android:text="Stats" />
+        android:text="Stats"
+        android:textSize="16sp"
+        android:textStyle="bold" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -66,7 +93,7 @@
         android:orientation="horizontal">
 
         <LinearLayout
-            android:layout_width="140dp"
+            android:layout_width="135dp"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
             android:orientation="vertical">
@@ -78,13 +105,14 @@
                 android:layout_height="wrap_content"
                 android:max="255"
                 android:progressTint="@color/bluePokemon" />
+
             <TextView
                 android:id="@+id/textViewHp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="12sp"
                 android:gravity="left"
-                android:text="hp" />
+                android:text="hp"
+                android:textSize="11sp" />
 
             <ProgressBar
                 android:id="@+id/attackBar"
@@ -93,13 +121,14 @@
                 android:layout_height="wrap_content"
                 android:max="255"
                 android:progressTint="@color/bluePokemon" />
+
             <TextView
                 android:id="@+id/textViewAttack"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="12sp"
                 android:gravity="left"
-                android:text="attack" />
+                android:text="attack"
+                android:textSize="11sp" />
 
             <ProgressBar
                 android:id="@+id/defenseBar"
@@ -108,17 +137,18 @@
                 android:layout_height="wrap_content"
                 android:max="255"
                 android:progressTint="@color/bluePokemon" />
+
             <TextView
                 android:id="@+id/textViewDefense"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="12sp"
                 android:gravity="left"
-                android:text="defense" />
+                android:text="defense"
+                android:textSize="11sp" />
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="140dp"
+            android:layout_width="135dp"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
             android:orientation="vertical">
@@ -130,13 +160,14 @@
                 android:layout_height="wrap_content"
                 android:max="255"
                 android:progressTint="@color/bluePokemon" />
+
             <TextView
                 android:id="@+id/textViewSpecialAttack"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="12sp"
                 android:gravity="left"
-                android:text="special attack" />
+                android:text="special attack"
+                android:textSize="11sp" />
 
             <ProgressBar
                 android:id="@+id/specialDefenseBar"
@@ -145,13 +176,14 @@
                 android:layout_height="wrap_content"
                 android:max="255"
                 android:progressTint="@color/bluePokemon" />
+
             <TextView
                 android:id="@+id/textViewSpecialDefense"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="12sp"
                 android:gravity="left"
-                android:text="special defense" />
+                android:text="special defense"
+                android:textSize="11sp" />
 
             <ProgressBar
                 android:id="@+id/speedBar"
@@ -160,15 +192,25 @@
                 android:layout_height="wrap_content"
                 android:max="255"
                 android:progressTint="@color/bluePokemon" />
+
             <TextView
                 android:id="@+id/textViewSpeed"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="12sp"
                 android:gravity="left"
-                android:text="speed" />
+                android:text="speed"
+                android:textSize="11sp" />
         </LinearLayout>
 
     </LinearLayout>
+
+    <Button
+        android:id="@+id/buttonCapture"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/boton_poke"
+        android:text="Capture" />
 
 </LinearLayout>

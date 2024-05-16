@@ -27,7 +27,8 @@
     <string name="special_attack_stats">Special Attack %1$d/255</string>
     <string name="special_defense_stats">Special Defense %1$d/255</string>
     <string name="speed_stats">Speed %1$d/255</string>
-    
+    <string name="title_activity_capture">CaptureActivity</string>
+    <string name="title_activity_capture_activity.java">CaptureActivity.java</string>
 
 
 </resources>

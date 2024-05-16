@@ -1,6 +1,7 @@
 package com.example.pokedex;
 
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -14,6 +15,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -106,9 +108,9 @@ public class PokedexFragment extends Fragment {
                     String query = searchEditText.getText().toString().trim();
                     if (!query.isEmpty()) {
                         pokemonListRequest(query);
-                        listSearch = false;
-                    } else {
                         listSearch = true;
+                    } else {
+                        listSearch = false;
                         adapter.setPokemonList(pokemonList);
                         adapter.notifyDataSetChanged();
                     }
@@ -125,10 +127,10 @@ public class PokedexFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 // clic en un elemento del GridView
                 Pokemon clickedPokemon;
-                if(listSearch) {
-                    clickedPokemon = pokemonList.get(position);
-                } else {
+                if (listSearch) {
                     clickedPokemon = pokemonListSearch.get(position);
+                } else {
+                    clickedPokemon = pokemonList.get(position);
                 }
                 showPokemonDetailsPopup(clickedPokemon);
             }
@@ -145,7 +147,7 @@ public class PokedexFragment extends Fragment {
         isLoading = true;
 
         String pokemonUrl = BASE_URL + "pokemon/" + query.toLowerCase();
-        System.out.println( " analizar la respuesta JSON 0:"+pokemonUrl);
+        System.out.println(" analizar la respuesta JSON 0:" + pokemonUrl);
         JsonObjectRequest request = new JsonObjectRequest(
                 Request.Method.GET,
                 pokemonUrl,
@@ -163,14 +165,14 @@ public class PokedexFragment extends Fragment {
 
                                 // Obtener el nombre de la habilidad desde el objeto de habilidad
                                 String abilityName = abilityObject.getString("name");
-                                String abilityUrl = "https://pokeapi.co/api/v2/pokemon/"+idPokemon+"/";
-                                System.out.println("abilityName="+abilityName);
-                                System.out.println("abilityUrl="+abilityUrl);
+                                String abilityUrl = "https://pokeapi.co/api/v2/pokemon/" + idPokemon + "/";
+                                System.out.println("abilityName=" + abilityName);
+                                System.out.println("abilityUrl=" + abilityUrl);
 
                                 Pokemon pokemon = new Pokemon(151, abilityName, abilityUrl);
                                 pokemonDetailRequest(pokemon);
 
-                                System.out.println("pokeimg=="+pokemon.getUrl_front_default());
+                                System.out.println("pokeimg==" + pokemon.getUrl_front_default());
                                 // Agregar el Pokémon a la lista
                                 pokemonListSearch = new ArrayList<>();
                                 pokemonListSearch.clear();
@@ -257,7 +259,8 @@ public class PokedexFragment extends Fragment {
 
         gridView.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
-            public void onScrollStateChanged(AbsListView view, int scrollState) {}
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+            }
 
             @Override
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
@@ -287,12 +290,12 @@ public class PokedexFragment extends Fragment {
 
                             JSONArray stats = response.getJSONArray("stats");
 
-                            int hp=0;
-                            int attack=0;
-                            int defense=0;
-                            int special_attack=0;
-                            int special_defense=0;
-                            int speed=0;
+                            int hp = 0;
+                            int attack = 0;
+                            int defense = 0;
+                            int special_attack = 0;
+                            int special_defense = 0;
+                            int speed = 0;
 
                             for (int i = 0; i < stats.length(); i++) {
                                 JSONObject entry = stats.getJSONObject(i);
@@ -301,15 +304,20 @@ public class PokedexFragment extends Fragment {
 
                                 if (statName.equals("hp")) {
                                     hp = entry.getInt("base_stat");
-                                }if (statName.equals("attack")) {
+                                }
+                                if (statName.equals("attack")) {
                                     attack = entry.getInt("base_stat");
-                                }if (statName.equals("defense")) {
+                                }
+                                if (statName.equals("defense")) {
                                     defense = entry.getInt("base_stat");
-                                }if (statName.equals("special-attack")) {
+                                }
+                                if (statName.equals("special-attack")) {
                                     special_attack = entry.getInt("base_stat");
-                                }if (statName.equals("special-defense")) {
+                                }
+                                if (statName.equals("special-defense")) {
                                     special_defense = entry.getInt("base_stat");
-                                }if (statName.equals("speed")) {
+                                }
+                                if (statName.equals("speed")) {
                                     speed = entry.getInt("base_stat");
                                 }
                             }
@@ -344,7 +352,7 @@ public class PokedexFragment extends Fragment {
     }
 
     private void pokemonDetailInfoRequest(final Pokemon pokemon) {
-        String allPokemonUrl = BASE_URL + "pokemon-species/" + pokemon.getNumber() + "/" ;
+        String allPokemonUrl = BASE_URL + "pokemon-species/" + pokemon.getNumber() + "/";
         JsonObjectRequest request = new JsonObjectRequest(
                 Request.Method.GET,
                 allPokemonUrl,
@@ -409,6 +417,7 @@ public class PokedexFragment extends Fragment {
         LayoutInflater inflater = requireActivity().getLayoutInflater();
         View popupView = inflater.inflate(R.layout.popup_pokemon_details, null);
 
+
         // Obtener referencias a los elementos del layout del popup
         ImageView imageViewFront = popupView.findViewById(R.id.imageViewFront);
         ImageView imageViewBack = popupView.findViewById(R.id.imageViewBack);
@@ -427,7 +436,7 @@ public class PokedexFragment extends Fragment {
 
         //Actualiza progresBar stats
         String hpText = getString(R.string.hp_stats, pokemon.getHp());
-        textViewHp.setText(hpText );
+        textViewHp.setText(hpText);
         String attackText = getString(R.string.attack_stats, pokemon.getAttack());
         textViewAttack.setText(attackText);
         String defenseText = getString(R.string.defense_stats, pokemon.getDefense());
@@ -471,59 +480,21 @@ public class PokedexFragment extends Fragment {
         // Mostrar el popup
         AlertDialog dialog = builder.create();
         dialog.show();
+
+
+        Button btn_capture = popupView.findViewById(R.id.buttonCapture);
+        btn_capture.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                System.out.println("Vamos a capturar a " +pokemon.getName());
+                Intent intent = new Intent(v.getContext(), CaptureActivity.class);
+
+                // Si necesitas pasar datos adicionales a la nueva actividad, puedes hacerlo aquí
+                intent.putExtra("pokemonName", pokemon.getName());
+
+                // Iniciar la actividad usando el Intent
+                v.getContext().startActivity(intent);
+            }
+        });
     }
-
-
-
-//    private void performSearch() {
-//        String searchTerm = searchEditText.getText().toString().toLowerCase().trim();
-//
-//        if (!searchTerm.isEmpty()) {
-//            // Limpiar la lista antes de realizar una nueva búsqueda
-//            pokemonList.clear();
-//            adapter.notifyDataSetChanged();
-//
-//            // Realizar la solicitud de búsqueda
-//            String searchUrl = BASE_URL + "pokemon/" + searchTerm;
-//
-//            JsonObjectRequest searchRequest = new JsonObjectRequest(
-//                    Request.Method.GET,
-//                    searchUrl,
-//                    null,
-//                    new Response.Listener<JSONObject>() {
-//                        @Override
-//                        public void onResponse(JSONObject response) {
-//                            try {
-//                                pokemonList.clear();
-//                                String name = response.getString("name");
-//                                name = name.substring(0, 1).toUpperCase() + name.substring(1);
-//                                String url = response.getString("url");
-//
-//                                System.out.println("name="+ name);
-//                                Pokemon pokemon = new Pokemon(0, name, url); // Ajusta el ID según sea necesario
-//
-//                                // Obtener detalles del Pokémon buscado
-//                                pokemonDetailRequest(pokemon);
-//
-//                                // Agregar el Pokémon a la lista y notificar al adaptador
-//                                pokemonList.add(pokemon);
-//                                adapter.notifyDataSetChanged();
-//                            } catch (JSONException e) {
-//                                e.printStackTrace();
-//                                Log.e(TAG, "Error al analizar la respuesta de búsqueda JSON: " + e.getMessage());
-//                            }
-//                        }
-//                    },
-//                    new Response.ErrorListener() {
-//                        @Override
-//                        public void onErrorResponse(VolleyError error) {
-//                            Log.e(TAG, "Error en la solicitud de búsqueda: " + error.toString());
-//                        }
-//                    }
-//            );
-//
-//            // Agregar la solicitud de búsqueda a la cola
-//            requestQueue.add(searchRequest);
-//        }
-//    }
 }
