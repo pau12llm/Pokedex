@@ -58,6 +58,7 @@ public class PokedexFragment extends Fragment {
     private int offset = 0;
     private final int limit = 15;
     private boolean isLoading = false;
+    private boolean listSearch = false;
 
     private ProgressBar hpBar;
     private ProgressBar attackBar;
@@ -65,6 +66,7 @@ public class PokedexFragment extends Fragment {
     private ProgressBar specialAttackBar;
     private ProgressBar specialDefenseBar;
     private ProgressBar speedBar;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -100,50 +102,34 @@ public class PokedexFragment extends Fragment {
                 if (actionId == EditorInfo.IME_ACTION_SEARCH || actionId == EditorInfo.IME_ACTION_DONE ||
                         (keyEvent != null && keyEvent.getAction() == KeyEvent.ACTION_DOWN &&
                                 keyEvent.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
-                    // Acción a realizar cuando se presiona la tecla "Intro"
-                    String query = searchEditText.getText().toString().trim(); // Obtener el texto y eliminar espacios en blanco alrededor
+                    // presiona la tecla "Intro"
+                    String query = searchEditText.getText().toString().trim();
                     if (!query.isEmpty()) {
-                        Log.d(TAG, "Search query in onEditorAction: " + query); // Registro del nombre de búsqueda
                         pokemonListRequest(query);
+                        listSearch = false;
                     } else {
+                        listSearch = true;
                         adapter.setPokemonList(pokemonList);
                         adapter.notifyDataSetChanged();
-                        Log.d(TAG, "Search query is empty in onEditorAction");
                     }
-                    return true; // Indicar que se ha manejado el evento
+                    return true;
                 }
-                return false; // Devolver false para permitir que el sistema maneje el evento también
+                return false;
             }
 
-
-
-
         });
-
-
-        // Configurar el listener para el clic en los elementos del GridView
-//        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                // Manejar el clic en un elemento del GridView
-//                Pokemon clickedPokemon = pokemonList.get(position);
-//                String pokemonName = clickedPokemon.getName();
-//
-//                // Mostrar un Toast con el nombre del Pokémon clicado
-//                Toast.makeText(requireContext(), "Clic en: " + pokemonName, Toast.LENGTH_SHORT).show();
-//
-//                // Aquí puedes abrir una nueva actividad o fragmento para mostrar detalles del Pokémon seleccionado
-//            }
-//        });
 
         // Configurar el listener para el clic en los elementos del GridView
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                // Manejar el clic en un elemento del GridView
-
-                Pokemon clickedPokemon = pokemonList.get(position);
-
+                // clic en un elemento del GridView
+                Pokemon clickedPokemon;
+                if(listSearch) {
+                    clickedPokemon = pokemonList.get(position);
+                } else {
+                    clickedPokemon = pokemonListSearch.get(position);
+                }
                 showPokemonDetailsPopup(clickedPokemon);
             }
         });
@@ -181,8 +167,6 @@ public class PokedexFragment extends Fragment {
                                 System.out.println("abilityName="+abilityName);
                                 System.out.println("abilityUrl="+abilityUrl);
 
-                                // Aquí puedes manejar los datos de la habilidad según tus necesidades
-                                // Por ejemplo, crear un objeto Pokemon con la información de la habilidad
                                 Pokemon pokemon = new Pokemon(151, abilityName, abilityUrl);
                                 pokemonDetailRequest(pokemon);
 
@@ -243,7 +227,6 @@ public class PokedexFragment extends Fragment {
                                 Pokemon pokemon = new Pokemon(offset + i + 1, name, url);
                                 pokemonList.add(pokemon);
 
-                                // Obtener los detalles del Pokémon para extraer las URL de las imágenes
                                 pokemonDetailRequest(pokemon);
                             }
 
@@ -272,12 +255,9 @@ public class PokedexFragment extends Fragment {
         // Agregar la solicitud a la cola de solicitudes
         requestQueue.add(request);
 
-
         gridView.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
-            public void onScrollStateChanged(AbsListView view, int scrollState) {
-                // No es necesario implementar nada aquí para la carga progresiva
-            }
+            public void onScrollStateChanged(AbsListView view, int scrollState) {}
 
             @Override
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
@@ -333,7 +313,6 @@ public class PokedexFragment extends Fragment {
                                     speed = entry.getInt("base_stat");
                                 }
                             }
-//Max 255
                             pokemon.setUrl_front_default(defaultImageUrl);
                             pokemon.setUrl_front_shiny(shinyImageUrl);
                             pokemon.setUrl_back_default(defaultBackImageUrl);
@@ -345,7 +324,7 @@ public class PokedexFragment extends Fragment {
                             pokemon.setSpeed(speed);
 
                             pokemonDetailInfoRequest(pokemon);
-                            adapter.notifyDataSetChanged(); // Notificar al adaptador que los datos han cambiado
+                            adapter.notifyDataSetChanged();
                         } catch (JSONException e) {
                             e.printStackTrace();
                             Log.e(TAG, "Error al analizar la respuesta JSON del detalle del Pokémon: " + e.getMessage());
@@ -386,7 +365,6 @@ public class PokedexFragment extends Fragment {
                                     // Acceder al flavor_text de la entrada en inglés
                                     flavorText = processFlavorText(entry.getString("flavor_text"));
 
-                                    // Romper el bucle una vez que se encuentre el flavor_text en inglés
                                     break;
                                 }
                             }
