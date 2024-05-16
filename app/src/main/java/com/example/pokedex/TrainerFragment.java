@@ -19,9 +19,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 
 public class TrainerFragment extends Fragment {
 
@@ -34,7 +32,7 @@ public class TrainerFragment extends Fragment {
     // Firebase
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
-    private String loggedEmail;
+    private String userID;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -55,7 +53,7 @@ public class TrainerFragment extends Fragment {
         FirebaseUser user = mAuth.getCurrentUser();
 
         if (user != null) {
-            loggedEmail = user.getEmail();
+            userID = user.getUid();
             // Set click listener for logout button
             logoutButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -78,14 +76,14 @@ public class TrainerFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        if (loggedEmail != null) {
+        if (userID != null) {
             getUserData();
         }
     }
 
     private void getUserData() {
         db.collection("users")
-                .document(loggedEmail)
+                .document(userID)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
@@ -94,11 +92,15 @@ public class TrainerFragment extends Fragment {
                             DocumentSnapshot documentSnapshot = task.getResult();
                             if (documentSnapshot != null && documentSnapshot.exists()) {
                                 String name = documentSnapshot.getString("nombre");
-                                long money = documentSnapshot.getLong("money");
+                                Long money = documentSnapshot.getLong("money");
 
                                 userNameTextView.setText("Trainer Name: " + name);
                                 userMoneyTextView.setText("Money: " + String.valueOf(money));
+                            } else {
+                                Log.d(TAG, "No such document");
                             }
+                        } else {
+                            Log.d(TAG, "get failed with ", task.getException());
                         }
                     }
                 })

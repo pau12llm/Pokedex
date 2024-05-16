@@ -66,7 +66,6 @@ public class MainActivity extends AppCompatActivity {
         if (currentUser != null) {
             startActivity(new Intent(MainActivity.this, TabBarActivity.class));
             finish(); // Finaliza la actividad actual para que el usuario no pueda volver atrás con el botón de retroceso
-            mAuth.signOut();
 
         }
     }
