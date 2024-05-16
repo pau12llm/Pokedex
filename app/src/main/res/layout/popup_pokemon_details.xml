@@ -49,14 +49,26 @@
         android:paddingTop="8dp"
         android:paddingBottom="10dp"
         android:text="Pokemon Name" />
+
+    <TextView
+        android:id="@+id/titleState"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:paddingTop="8dp"
+        android:text="Stats" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="horizontal">
 
         <LinearLayout
-            android:layout_width="142dp"
+            android:layout_width="140dp"
             android:layout_height="wrap_content"
+            android:layout_margin="5dp"
             android:orientation="vertical">
 
             <ProgressBar
@@ -103,6 +115,13 @@
                 android:textSize="12sp"
                 android:gravity="left"
                 android:text="defense" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="140dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:orientation="vertical">
 
             <ProgressBar
                 android:id="@+id/specialAttackBar"
@@ -152,4 +171,4 @@
 
     </LinearLayout>
 
-    </LinearLayout>
+</LinearLayout>
