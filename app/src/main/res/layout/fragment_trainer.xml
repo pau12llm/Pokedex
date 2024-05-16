@@ -5,13 +5,13 @@
     android:layout_height="match_parent"
     tools:context=".TrainerFragment">
 
-    <!-- Fondo de la imagen -->
-    <ImageView
+
+    <!--<ImageView
         android:id="@+id/imageView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
-        android:src="@drawable/trainer" />
+        android:src="@drawable/trainer" />-->
 
     <!-- Contenido de la interfaz de usuario -->
     <ScrollView
