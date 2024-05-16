@@ -69,7 +69,7 @@ public class TrainerFragment extends Fragment {
                 }
             });
         } else {
-            Toast.makeText(getActivity(), "No user found!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "No user is found!", Toast.LENGTH_SHORT).show();
         }
 
         return view;
