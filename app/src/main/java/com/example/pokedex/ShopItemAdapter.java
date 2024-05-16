@@ -50,9 +50,9 @@ public class ShopItemAdapter extends RecyclerView.Adapter<ShopItemAdapter.ItemVi
         } else {
             holder.imageViewItem.setImageResource(R.drawable.pokeball);
         }
-        Log.d("ShopItemAdapter", "Item name: " + item.getName());
-        Log.d("ShopItemAdapter", "Item category: " + item.getCategory());
-        Log.d("ShopItemAdapter", "Item image URL: " + item.getImageUrl());
+       // Log.d("ShopItemAdapter", "Item name: " + item.getName());
+        //Log.d("ShopItemAdapter", "Item category: " + item.getCategory());
+        //Log.d("ShopItemAdapter", "Item image URL: " + item.getImageUrl());
     }
 
     @Override
@@ -74,4 +74,5 @@ public class ShopItemAdapter extends RecyclerView.Adapter<ShopItemAdapter.ItemVi
             textPrice=itemView.findViewById(R.id.textView4);
         }
     }
+
 }
