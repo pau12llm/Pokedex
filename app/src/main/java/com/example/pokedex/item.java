@@ -5,12 +5,42 @@ public class item {
     private String category;
     private String imageUrl;
     private int price;
+    private String description;
+    private String shortdescription;
+    private String descriptionMotivation;
 
-    public item(String name, String category,int price, String imageUrl) {
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public item(String name, String category, int price, String imageUrl, String description,String shortdescription, String descriptionMotivation) {
         this.name = name;
         this.category = category;
         this.imageUrl = imageUrl;
         this.price = price;
+        this.description=description;
+        this.shortdescription=shortdescription;
+        this.descriptionMotivation=descriptionMotivation;
+    }
+
+    public String getShortdescription() {
+        return shortdescription;
+    }
+
+    public void setShortdescription(String shortdescription) {
+        this.shortdescription = shortdescription;
+    }
+
+    public String getDescriptionMotivation() {
+        return descriptionMotivation;
+    }
+
+    public void setDescriptionMotivation(String descriptionMotivation) {
+        this.descriptionMotivation = descriptionMotivation;
     }
 
     public int getPrice() {

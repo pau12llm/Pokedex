@@ -107,23 +107,59 @@ public class ShopFragment extends Fragment {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
+                            // Obtener la descripción corta del ítem
+                            JSONArray effectEntries = response.getJSONArray("effect_entries");
+                            String shortdescription = "";
+                            for (int i = 0; i < effectEntries.length(); i++) {
+                                JSONObject effectEntry = effectEntries.getJSONObject(i);
+                                shortdescription = effectEntry.getString("short_effect");
+                                // Solo se toma la primera descripción corta
+                                if (!shortdescription.isEmpty()) {
+                                    break;
+                                }
+                            }
+
+                            // Obtener la descripción de texto de sabor del ítem
+                            JSONArray flavorTextEntries = response.getJSONArray("flavor_text_entries");
+                            String descriptionMotivation = "";
+                            for (int i = 0; i < flavorTextEntries.length(); i++) {
+                                JSONObject flavorTextEntry = flavorTextEntries.getJSONObject(i);
+                                descriptionMotivation = flavorTextEntry.getString("text");
+                                // Solo se toma la primera descripción de texto de sabor
+                                if (!descriptionMotivation.isEmpty()) {
+                                    break;
+                                }
+                            }
+
+                            // Obtener la URL de la imagen del ítem
                             JSONObject spritesObject = response.getJSONObject("sprites");
                             String imageUrl = spritesObject.getString("default");
 
+                            // Obtener la categoría y el precio del ítem
                             JSONObject categoryObject = response.getJSONObject("category");
                             String category = categoryObject.getString("name");
                             int price = response.getInt("cost");
 
+                            // Obtener la descripción anterior del ítem
+                            String description = response.getJSONArray("effect_entries").getJSONObject(0).getString("effect");
+
                             Log.d(TAG, "Item Name: " + itemName);
                             Log.d(TAG, "Item Category: " + category);
                             Log.d(TAG, "Item price: " + price);
-                            itemList.add(new item(itemName, category,price,imageUrl));
+                            Log.d(TAG, "Short Effect: " + shortdescription);
+                            Log.d(TAG, "Flavor Text: " + descriptionMotivation);
+                            Log.d(TAG, "Description: " + description);
+
+                            // Agregar el ítem a la lista y notificar al adaptador
+                            itemList.add(new item(itemName, category, price, imageUrl, description, shortdescription, descriptionMotivation));
                             itemAdapter.notifyDataSetChanged();
                         } catch (JSONException e) {
                             e.printStackTrace();
                             Log.e(TAG, "Error parsing JSON", e);
                         }
                     }
+
+
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
