@@ -2,7 +2,9 @@ package com.example.pokedex;
 
 import com.android.volley.RequestQueue;
 
-public class Pokemon {
+import java.io.Serializable;
+
+public class Pokemon implements Serializable{
         private int number;
         private String name;
         private String url_API;
@@ -12,14 +14,16 @@ public class Pokemon {
         private String url_back_shiny;
         private String description;
         private boolean shiny;
-        private RequestQueue requestQueue;
-
         private int hp;
         private int attack;
         private int special_attack;
         private int defense;
         private int special_defense;
         private int speed;
+        private String[][] ability;
+        private boolean legendary;
+        private int evolution;
+        private RequestQueue requestQueue;
 
         public Pokemon(int number, String name, String url_API) {
                 this.number = number;
@@ -102,14 +106,6 @@ public class Pokemon {
                 this.description = description;
         }
 
-        // Método para extraer el número del Pokémon desde la URL
-        public void extractNumberFromUrl() {
-                if (url_API != null) {
-                        String[] urlParts = url_API.split("/");
-                        String lastPart = urlParts[urlParts.length - 1];
-                        this.number = Integer.parseInt(lastPart);
-                }
-        }
 
         public int getHp() {
                 return hp;
@@ -157,6 +153,30 @@ public class Pokemon {
 
         public void setSpeed(int speed) {
                 this.speed = speed;
+        }
+
+        public boolean isLegendary() {
+                return legendary;
+        }
+
+        public void setLegendary(boolean legendary) {
+                this.legendary = legendary;
+        }
+
+        public int getEvolution() {
+                return evolution;
+        }
+
+        public void setEvolution(int evolution) {
+                this.evolution = evolution;
+        }
+
+        public String[][] getAbility() {
+                return ability;
+        }
+
+        public void setAbility(String[][] ability) {
+                this.ability = ability;
         }
 
         @Override

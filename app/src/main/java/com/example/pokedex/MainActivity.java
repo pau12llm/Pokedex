@@ -52,12 +52,9 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 // Aquí inicia la actividad EmailPasswordActivity para iniciar sesión
                 startActivity(new Intent(MainActivity.this, EmailPasswordActivity.class));
-
             }
         });
-
     }
-
 
     @Override
     public void onStart() {
@@ -65,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser != null) {
             startActivity(new Intent(MainActivity.this, TabBarActivity.class));
-            finish(); // Finaliza la actividad actual para que el usuario no pueda volver atrás con el botón de retroceso
+            finish();
         }
     }
 
@@ -89,7 +86,6 @@ public class MainActivity extends AppCompatActivity {
                         Log.w(TAG, "signInWithEmail:failure", task.getException());
                         Toast.makeText(MainActivity.this, "Authentication failed.",
                                 Toast.LENGTH_LONG).show();
-
                     }
                 }
             });

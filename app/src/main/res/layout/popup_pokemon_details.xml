@@ -4,38 +4,45 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:gravity="center"
+    android:padding="10dp">
 
-    <ImageView
-        android:id="@+id/pokeballImg"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:layout_gravity="end"
-        tools:srcCompat="@tools:sample/avatars" />
-
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center_horizontal"
-        android:orientation="horizontal">
+        android:layout_height="wrap_content"
+        >
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/imageViewFront"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:adjustViewBounds="true"
+                android:scaleType="fitCenter"
+                tools:srcCompat="@tools:sample/avatars" />
+
+            <ImageView
+                android:id="@+id/imageViewBack"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:adjustViewBounds="true"
+                android:scaleType="fitCenter"
+                tools:srcCompat="@tools:sample/avatars" />
+
+        </LinearLayout>
         <ImageView
-            android:id="@+id/imageViewFront"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:adjustViewBounds="true"
-            android:scaleType="fitCenter"
+            android:id="@+id/pokeballImg"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="end|bottom"
             tools:srcCompat="@tools:sample/avatars" />
 
-        <ImageView
-            android:id="@+id/imageViewBack"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:adjustViewBounds="true"
-            android:scaleType="fitCenter"
-            tools:srcCompat="@tools:sample/avatars" />
-
-    </LinearLayout>
+    </FrameLayout>
 
     <TextView
         android:id="@+id/textViewName"

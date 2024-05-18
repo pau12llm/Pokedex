@@ -6,17 +6,23 @@
     android:orientation="vertical"
     android:gravity="center"
     android:padding="16dp">
+
         <ImageView
-        android:id="@+id/imageViewFront"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:adjustViewBounds="true"
-        android:scaleType="fitCenter"
-        tools:srcCompat="@tools:sample/avatars" />
+            android:id="@+id/imageViewFront"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter"
+            tools:srcCompat="@tools:sample/avatars" />
+
+        <Button
+            android:id="@+id/btn_escape"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="escape" />
 
         <ListView
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
-
 
 </LinearLayout>

@@ -44,7 +44,6 @@ public class PokemonAdapter extends BaseAdapter {
     public Object getItem(int position) {
         return pokemonList.get(position);
     }
-    // Método para filtrar la lista de Pokémon por nombre
 
 
     @Override

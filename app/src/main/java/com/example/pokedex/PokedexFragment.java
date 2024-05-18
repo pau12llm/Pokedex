@@ -96,8 +96,6 @@ public class PokedexFragment extends Fragment {
         searchEditText = view.findViewById(R.id.searchEditText);
 
         // Configurar el listener para la acción de teclado "Intro"
-
-
         searchEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
@@ -166,13 +164,13 @@ public class PokedexFragment extends Fragment {
                                 // Obtener el nombre de la habilidad desde el objeto de habilidad
                                 String abilityName = abilityObject.getString("name");
                                 String abilityUrl = "https://pokeapi.co/api/v2/pokemon/" + idPokemon + "/";
-                                System.out.println("abilityName=" + abilityName);
-                                System.out.println("abilityUrl=" + abilityUrl);
+                                //System.out.println("abilityName=" + abilityName);
+                                //System.out.println("abilityUrl=" + abilityUrl);
 
                                 Pokemon pokemon = new Pokemon(151, abilityName, abilityUrl);
                                 pokemonDetailRequest(pokemon);
 
-                                System.out.println("pokeimg==" + pokemon.getUrl_front_default());
+                                //System.out.println("pokeimg==" + pokemon.getUrl_front_default());
                                 // Agregar el Pokémon a la lista
                                 pokemonListSearch = new ArrayList<>();
                                 pokemonListSearch.clear();
@@ -272,7 +270,6 @@ public class PokedexFragment extends Fragment {
         });
     }
 
-
     private void pokemonDetailRequest(@NonNull final Pokemon pokemon) {
         JsonObjectRequest request = new JsonObjectRequest(
                 Request.Method.GET,
@@ -282,6 +279,7 @@ public class PokedexFragment extends Fragment {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
+
                             JSONObject sprites = response.getJSONObject("sprites");
                             String defaultImageUrl = sprites.getString("front_default");
                             String shinyImageUrl = sprites.getString("front_shiny");
@@ -324,6 +322,7 @@ public class PokedexFragment extends Fragment {
                             pokemon.setUrl_front_default(defaultImageUrl);
                             pokemon.setUrl_front_shiny(shinyImageUrl);
                             pokemon.setUrl_back_default(defaultBackImageUrl);
+                            pokemon.setUrl_back_shiny(shinyBackImageUrl);
                             pokemon.setHp(hp);
                             pokemon.setAttack(attack);
                             pokemon.setDefense(defense);
@@ -399,11 +398,9 @@ public class PokedexFragment extends Fragment {
     }
 
     private String processFlavorText(String flavorText) {
-        // Reemplazar secuencias de escape para manejar saltos de línea y otros caracteres especiales
         flavorText = flavorText.replace("\n", " "); // Reemplazar saltos de línea con espacios
         flavorText = flavorText.replace("\f", " "); // Eliminar saltos de página (\f)
 
-        // Eliminar caracteres adicionales no deseados (como espacios duplicados)
         flavorText = flavorText.trim(); // Eliminar espacios en blanco al inicio y al final
 
         return flavorText;
@@ -417,11 +414,11 @@ public class PokedexFragment extends Fragment {
         LayoutInflater inflater = requireActivity().getLayoutInflater();
         View popupView = inflater.inflate(R.layout.popup_pokemon_details, null);
 
-
         // Obtener referencias a los elementos del layout del popup
         ImageView imageViewFront = popupView.findViewById(R.id.imageViewFront);
         ImageView imageViewBack = popupView.findViewById(R.id.imageViewBack);
-//        TextView textViewName = popupView.findViewById(R.id.textViewName);
+        ImageView pokeballImg = popupView.findViewById(R.id.pokeballImg);
+
         TextView textViewDescription = popupView.findViewById(R.id.textViewDescription);
         TextView textViewHp = popupView.findViewById(R.id.textViewHp);
         TextView textViewAttack = popupView.findViewById(R.id.textViewAttack);
@@ -430,10 +427,7 @@ public class PokedexFragment extends Fragment {
         TextView textViewSpecialDefense = popupView.findViewById(R.id.textViewSpecialDefense);
         TextView textViewSpeed = popupView.findViewById(R.id.textViewSpeed);
 
-        // Establecer el nombre del Pokémon en el TextView
-//        textViewName.setText(pokemon.getName());
         textViewDescription.setText(pokemon.getDescription());
-
         //Actualiza progresBar stats
         String hpText = getString(R.string.hp_stats, pokemon.getHp());
         textViewHp.setText(hpText);
@@ -471,6 +465,9 @@ public class PokedexFragment extends Fragment {
         Glide.with(requireContext())
                 .load(pokemon.getUrl_back_default())
                 .into(imageViewBack);
+        Glide.with(requireContext())
+                .load("https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/master-ball.png")
+                .into(pokeballImg);
 
         System.out.println("testeo==" + pokemon.toString());
 
@@ -490,7 +487,7 @@ public class PokedexFragment extends Fragment {
                 Intent intent = new Intent(v.getContext(), CaptureActivity.class);
 
                 // Si necesitas pasar datos adicionales a la nueva actividad, puedes hacerlo aquí
-                intent.putExtra("pokemonName", pokemon.getName());
+                intent.putExtra("pokemon", pokemon);
 
                 // Iniciar la actividad usando el Intent
                 v.getContext().startActivity(intent);
