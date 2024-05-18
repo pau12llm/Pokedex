@@ -97,6 +97,7 @@ public class TrainerFragment extends Fragment {
                                     String name = document.getString("nombre");
                                     Long money = document.getLong("money");
 
+                                    //debuggar be, punts on task  is successful , backend
                                     userNameTextView.setText("Trainer Name: " + name);
                                     userMoneyTextView.setText("Money: " + String.valueOf(money));
                                     break;
