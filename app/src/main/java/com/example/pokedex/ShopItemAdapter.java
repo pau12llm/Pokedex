@@ -1,8 +1,6 @@
 package com.example.pokedex;
 
 import android.content.Context;
-import android.graphics.text.TextRunShaper;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,12 +16,12 @@ import java.util.List;
 
 public class ShopItemAdapter extends RecyclerView.Adapter<ShopItemAdapter.ItemViewHolder> {
 
-    private List<item> itemList;
+    private List<Item> itemList;
     private Context context;
 
     // Constructor, setters, getters, etc.
 
-    public ShopItemAdapter(Context context, List<item> itemList) {
+    public ShopItemAdapter(Context context, List<Item> itemList) {
         this.context = context;
         this.itemList = itemList;
     }
@@ -37,7 +35,7 @@ public class ShopItemAdapter extends RecyclerView.Adapter<ShopItemAdapter.ItemVi
 
     @Override
     public void onBindViewHolder(@NonNull final ItemViewHolder holder, int position) {
-        item item = itemList.get(position);
+        Item item = itemList.get(position);
 
         // Establecer el nombre y la categoría del Item en los TextView correspondientes
         holder.textViewItemName.setText(item.getName());

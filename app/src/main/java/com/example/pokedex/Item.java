@@ -1,6 +1,6 @@
 package com.example.pokedex;
 
-public class item {
+public class Item {
     private String name;
     private String category;
     private String imageUrl;
@@ -17,7 +17,7 @@ public class item {
         this.description = description;
     }
 
-    public item(String name, String category, int price, String imageUrl, String description,String shortdescription, String descriptionMotivation) {
+    public Item(String name, String category, int price, String imageUrl, String description, String shortdescription, String descriptionMotivation) {
         this.name = name;
         this.category = category;
         this.imageUrl = imageUrl;

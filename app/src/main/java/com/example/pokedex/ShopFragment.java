@@ -8,7 +8,6 @@ import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.Request;
@@ -17,9 +16,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.pokedex.R;
-import com.example.pokedex.ShopItemAdapter;
-import com.example.pokedex.item;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -32,7 +28,7 @@ public class ShopFragment extends Fragment {
 
     private RecyclerView recyclerView;
     private ShopItemAdapter itemAdapter;
-    private List<item> itemList;
+    private List<Item> itemList;
 
     private static final String TAG = "ShopFragment";
     private int money = 0; // Variable para almacenar el dinero
@@ -151,7 +147,7 @@ public class ShopFragment extends Fragment {
                             Log.d(TAG, "Description: " + description);
 
                             // Agregar el ítem a la lista y notificar al adaptador
-                            itemList.add(new item(itemName, category, price, imageUrl, description, shortdescription, descriptionMotivation));
+                            itemList.add(new Item(itemName, category, price, imageUrl, description, shortdescription, descriptionMotivation));
                             itemAdapter.notifyDataSetChanged();
                         } catch (JSONException e) {
                             e.printStackTrace();

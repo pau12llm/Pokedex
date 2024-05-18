@@ -5,13 +5,13 @@ public class Trainer {
 
         private String name;
         private int money;
-        private List<item> items;
+        private List<Item> Items;
         private List<Pokemon> pokemons;
 
-        public Trainer(String name, int money, List<item> items, List<Pokemon> pokemons) {
+        public Trainer(String name, int money, List<Item> Items, List<Pokemon> pokemons) {
             this.name = name;
             this.money = money;
-            this.items = items;
+            this.Items = Items;
             this.pokemons = pokemons;
         }
 
@@ -32,12 +32,12 @@ public class Trainer {
             this.money = money;
         }
 
-        public List<item> getItems() {
-            return items;
+        public List<Item> getItems() {
+            return Items;
         }
 
-        public void setItems(List<item> items) {
-            this.items = items;
+        public void setItems(List<Item> Items) {
+            this.Items = Items;
         }
 
         public List<Pokemon> getPokemons() {
