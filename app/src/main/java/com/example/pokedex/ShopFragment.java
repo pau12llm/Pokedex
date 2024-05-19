@@ -139,12 +139,12 @@ public class ShopFragment extends Fragment {
                             // Obtener la descripción anterior del ítem
                             String description = response.getJSONArray("effect_entries").getJSONObject(0).getString("effect");
 
-                            Log.d(TAG, "Item Name: " + itemName);
-                            Log.d(TAG, "Item Category: " + category);
-                            Log.d(TAG, "Item price: " + price);
-                            Log.d(TAG, "Short Effect: " + shortdescription);
-                            Log.d(TAG, "Flavor Text: " + descriptionMotivation);
-                            Log.d(TAG, "Description: " + description);
+                            //Log.d(TAG, "Item Name: " + itemName);
+                            //Log.d(TAG, "Item Category: " + category);
+                            //Log.d(TAG, "Item price: " + price);
+                           // Log.d(TAG, "Short Effect: " + shortdescription);
+                           // Log.d(TAG, "Flavor Text: " + descriptionMotivation);
+                           // Log.d(TAG, "Description: " + description);
 
                             // Agregar el ítem a la lista y notificar al adaptador
                             itemList.add(new Item(itemName, category, price, imageUrl, description, shortdescription, descriptionMotivation));
