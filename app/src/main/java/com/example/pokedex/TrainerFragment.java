@@ -10,16 +10,16 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 
 public class TrainerFragment extends Fragment {
 
@@ -32,7 +32,7 @@ public class TrainerFragment extends Fragment {
     // Firebase
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
-    private String userID;
+    private String userEmail;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -53,7 +53,9 @@ public class TrainerFragment extends Fragment {
         FirebaseUser user = mAuth.getCurrentUser();
 
         if (user != null) {
-            userID = user.getUid();
+            userEmail = user.getEmail();
+            Log.d(TAG, "User Email: " + userEmail); // Log the user email
+
             // Set click listener for logout button
             logoutButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -76,37 +78,42 @@ public class TrainerFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        if (userID != null) {
+        if (userEmail != null) {
             getUserData();
         }
     }
 
     private void getUserData() {
-        DocumentReference docRef = db.collection("users").document(userID);
-        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    if (document.exists()) {
-                        String name = document.getString("nombre");
-                        Long money = document.getLong("money");
+        db.collection("users")
+                .whereEqualTo("email", userEmail)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            QuerySnapshot querySnapshot = task.getResult();
+                            if (!querySnapshot.isEmpty()) {
+                                DocumentSnapshot document = querySnapshot.getDocuments().get(0);
+                                String name = document.getString("nombre");
+                                Long money = document.getLong("money");
 
-                        // Set the retrieved data to the TextViews
-                        userNameTextView.setText("Trainer Name: " + name);
-                        userMoneyTextView.setText("Money: " + String.valueOf(money));
-                    } else {
-                        Log.d(TAG, "No such document");
+                                Log.d(TAG, "Document data: " + document.getData()); // Log the entire document data
+
+                                // Set the retrieved data to the TextViews
+                                userNameTextView.setText("Trainer Name: " + name);
+                                userMoneyTextView.setText("Money: " + String.valueOf(money));
+                            } else {
+                                Log.d(TAG, "No such document");
+                            }
+                        } else {
+                            Log.d(TAG, "get failed with ", task.getException());
+                        }
                     }
-                } else {
-                    Log.d(TAG, "get failed with ", task.getException());
-                }
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Log.e(TAG, "Error getting user data: " + e.getMessage());
-            }
-        });
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e(TAG, "Error getting user data: " + e.getMessage());
+                    }
+                });
     }
 }
