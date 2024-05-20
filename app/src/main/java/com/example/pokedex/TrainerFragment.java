@@ -12,17 +12,14 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
-
-import java.util.List;
 
 public class TrainerFragment extends Fragment {
 
@@ -85,34 +82,31 @@ public class TrainerFragment extends Fragment {
     }
 
     private void getUserData() {
-        db.collection("users")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            List<DocumentSnapshot> documents = task.getResult().getDocuments();
-                            for (DocumentSnapshot document : documents) {
-                                if (document.getId().equals(userID)) {
-                                    String name = document.getString("nombre");
-                                    Long money = document.getLong("money");
+        DocumentReference docRef = db.collection("users").document(userID);
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        String name = document.getString("nombre");
+                        Long money = document.getLong("money");
 
-                                    //debuggar be, punts on task  is successful , backend
-                                    userNameTextView.setText("Trainer Name: " + name);
-                                    userMoneyTextView.setText("Money: " + String.valueOf(money));
-                                    break;
-                                }
-                            }
-                        } else {
-                            Log.d(TAG, "get failed with ", task.getException());
-                        }
+                        // Set the retrieved data to the TextViews
+                        userNameTextView.setText("Trainer Name: " + name);
+                        userMoneyTextView.setText("Money: " + String.valueOf(money));
+                    } else {
+                        Log.d(TAG, "No such document");
                     }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.e(TAG, "Error getting user data: " + e.getMessage());
-                    }
-                });
+                } else {
+                    Log.d(TAG, "get failed with ", task.getException());
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.e(TAG, "Error getting user data: " + e.getMessage());
+            }
+        });
     }
 }
