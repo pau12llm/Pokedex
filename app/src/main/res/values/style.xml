@@ -1,0 +1,6 @@
+<resources>
+    <style name="TransparentDialog" parent="Theme.AppCompat.Dialog">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:backgroundDimEnabled">true</item> <!-- Mantiene el dimming del fondo -->
+    </style>
+</resources>

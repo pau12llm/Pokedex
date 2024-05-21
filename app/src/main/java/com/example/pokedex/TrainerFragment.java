@@ -1,13 +1,19 @@
 package com.example.pokedex;
 
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
@@ -28,10 +34,11 @@ public class TrainerFragment extends Fragment {
     private static final String TAG = "TrainerFragment";
 
     // UI components
-    private EditText userNameEditText;
     private TextView userNameTextView;
     private TextView userMoneyTextView;
-    private Button saveButton;
+    private ImageButton changeNameButton;
+    private Button logoutButton;
+
 
     // Firebase
     private FirebaseAuth mAuth;
@@ -51,10 +58,9 @@ public class TrainerFragment extends Fragment {
 
         // Initialize UI views
         userNameTextView = view.findViewById(R.id.userNameTextView);
-        userNameEditText = view.findViewById(R.id.userNameEditText);
         userMoneyTextView = view.findViewById(R.id.userMoneyTextView);
-        Button logoutButton = view.findViewById(R.id.logoutButton);
-        saveButton = view.findViewById(R.id.saveButton);
+        logoutButton = view.findViewById(R.id.logoutButton);
+        changeNameButton = view.findViewById(R.id.changeNameButton);
 
         // Get currently authenticated user
         FirebaseUser user = mAuth.getCurrentUser();
@@ -76,13 +82,15 @@ public class TrainerFragment extends Fragment {
                 }
             });
 
-            // Set click listener for save button
-            saveButton.setOnClickListener(new View.OnClickListener() {
+            // Set click listener for change name button
+            changeNameButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    saveUserData();
+                    showNameChangePopup();
                 }
             });
+
+            getUserData();
         } else {
             Toast.makeText(getActivity(), "No user is found!", Toast.LENGTH_SHORT).show();
         }
@@ -115,9 +123,8 @@ public class TrainerFragment extends Fragment {
 
                                 Log.d(TAG, "Document data: " + document.getData()); // Log the entire document data
 
-                                // Set the retrieved data to the TextView and EditTexte
+                                // Set the retrieved data to the TextView
                                 userNameTextView.setText(name);
-                                userNameEditText.setHint("Change trainer's name");
                                 userMoneyTextView.setText("Money: " + String.valueOf(money));
                             } else {
                                 Log.d(TAG, "No such document");
@@ -134,9 +141,43 @@ public class TrainerFragment extends Fragment {
                 });
     }
 
-    private void saveUserData() {
+    private void showNameChangePopup() {
+        LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        final View popupView = inflater.inflate(R.layout.name_change_popup, null);
+
+        final EditText popupUserNameEditText = popupView.findViewById(R.id.popupUserNameEditText);
+        Button popupSaveButton = popupView.findViewById(R.id.popupSaveButton);
+
+        final PopupWindow popupWindow = new PopupWindow(popupView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, true);
+        popupWindow.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        popupWindow.setOutsideTouchable(true);
+        popupWindow.setElevation(90);
+
+        final View rootView = getActivity().findViewById(android.R.id.content);
+        final ViewGroup rootViewGroup = (ViewGroup) rootView;
+        final ColorDrawable dimDrawable = new ColorDrawable(Color.BLACK);
+        dimDrawable.setAlpha(150);
+        rootViewGroup.getOverlay().add(dimDrawable);
+
+        popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                rootViewGroup.getOverlay().remove(dimDrawable);
+            }
+        });
+
+        popupSaveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                saveUserData(popupUserNameEditText.getText().toString(), popupWindow);
+            }
+        });
+
+        popupWindow.showAtLocation(rootView, Gravity.CENTER, 0, 0);
+    }
+
+    private void saveUserData(String newName, final PopupWindow popupWindow) {
         if (documentId != null) {
-            String newName = userNameEditText.getText().toString();
             DocumentReference docRef = db.collection("users").document(documentId);
 
             docRef.update("nombre", newName)
@@ -148,9 +189,8 @@ public class TrainerFragment extends Fragment {
 
                             // Update the TextView with the new name
                             userNameTextView.setText(newName);
-                            // Optionally, clear the EditText
-                            userNameEditText.setText("");
-                            //pol
+                            // Close the popup
+                            popupWindow.dismiss();
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
@@ -165,3 +205,4 @@ public class TrainerFragment extends Fragment {
         }
     }
 }
+
