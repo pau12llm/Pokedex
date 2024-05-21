@@ -115,7 +115,7 @@ public class TrainerFragment extends Fragment {
 
                                 Log.d(TAG, "Document data: " + document.getData()); // Log the entire document data
 
-                                // Set the retrieved data to the TextView and EditText
+                                // Set the retrieved data to the TextView and EditTexte
                                 userNameTextView.setText(name);
                                 userNameEditText.setHint("Change trainer's name");
                                 userMoneyTextView.setText("Money: " + String.valueOf(money));
