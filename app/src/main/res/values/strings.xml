@@ -32,6 +32,7 @@
     <string name="title_activity_capture_activity.java">CaptureActivity.java</string>
     <string name="btn_capture">Capture</string>
     <string name="btn_use">Use</string>
+    <string name="btn_escape">Escape</string>
 
 
 </resources>

@@ -20,11 +20,11 @@
         <ListView
             android:id="@+id/listViewBackpack"
             android:layout_width="match_parent"
-            android:layout_height="500dp" />
+            android:layout_height="350dp" />
         <Button
             android:id="@+id/btn_escape"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/btn_capture" />
+            android:text="@string/btn_escape" />
 
 </LinearLayout>

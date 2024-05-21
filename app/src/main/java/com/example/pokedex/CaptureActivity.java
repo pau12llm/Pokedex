@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -78,7 +79,16 @@ public class CaptureActivity extends AppCompatActivity implements OnItemUseClick
         System.out.println("Usando el item: " + item.getName());
 
 
-        calcularProbabilidadCaptura(item.getName());
+        // Calcular la probabilidad de captura
+        boolean capturado = calcularProbabilidadCaptura(item.getName());
+
+        System.out.println("capturado?"+capturado);
+        // Mostrar un Toast dependiendo del resultado de la captura
+        if (capturado) {
+            showToast("Genial, ¡has capturado al Pokémon!");
+        } else {
+            showToast("Uy, ha faltado poco para capturar al Pokémon.");
+        }
     }
 
     public static boolean calcularProbabilidadShiny() {
@@ -114,16 +124,17 @@ public class CaptureActivity extends AppCompatActivity implements OnItemUseClick
     public boolean calcularProbabilidadCaptura(String tipoPokeball) {
         Random random = new Random();
         int randomNumber;
+        randomNumber = random.nextInt(600);
+
+        System.out.println( "el randomNumber" + randomNumber);
+        System.out.println( "el calculo es" + ((600 - type_pokemon) / 600.0 * 1));
 
         switch (tipoPokeball) {
             case "Pokeball":
-                randomNumber = random.nextInt(600);
                 return randomNumber > (600 - type_pokemon) / 600.0 * 1;
             case "Superball":
-                randomNumber = random.nextInt(600);
                 return randomNumber > (600 - type_pokemon) / 600.0 * 1.5;
             case "Ultraball":
-                randomNumber = random.nextInt(600);
                 return randomNumber > (600 - type_pokemon) / 600.0 * 2;
             case "Masterball":
                 return true;
@@ -131,5 +142,7 @@ public class CaptureActivity extends AppCompatActivity implements OnItemUseClick
                 return false;
         }
     }
-
+    private void showToast(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
 }
