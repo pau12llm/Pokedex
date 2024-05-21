@@ -21,6 +21,7 @@
     <string name="ShopTitle">LS POKEMON SHOP</string>
     <string name="back_button_description" />
 
+
     <string name="hp_stats">Hp %1$d/255</string>
     <string name="attack_stats">Attack %1$d/255</string>
     <string name="defense_stats">Defense %1$d/255</string>
@@ -29,6 +30,9 @@
     <string name="speed_stats">Speed %1$d/255</string>
     <string name="title_activity_capture">CaptureActivity</string>
     <string name="title_activity_capture_activity.java">CaptureActivity.java</string>
+    <string name="btn_capture">Capture</string>
+    <string name="btn_use">Use</string>
+    <string name="btn_escape">Escape</string>
 
 
 </resources>
