@@ -13,7 +13,6 @@
         android:scaleType="centerCrop"
         tools:srcCompat="@tools:sample/avatars" />
 
-
     <TextView
         android:id="@+id/itemName"
         android:layout_width="wrap_content"
@@ -23,8 +22,7 @@
         android:layout_gravity="center_vertical"
         android:layout_weight="1"
         android:text="Name"
-        android:layout_marginStart="8dp"
-         />
+        android:layout_marginStart="8dp" />
 
     <TextView
         android:id="@+id/itemNumber"
@@ -36,12 +34,10 @@
         android:text="15" />
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/btn_use"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="Use" />
-
+        android:text="@string/btn_use" />
 
 </LinearLayout>
 

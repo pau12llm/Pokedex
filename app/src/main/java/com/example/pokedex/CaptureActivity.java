@@ -17,8 +17,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class CaptureActivity extends AppCompatActivity {
-
+public class CaptureActivity extends AppCompatActivity implements OnItemUseClickListener {
+    int type_pokemon;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,6 +54,7 @@ public class CaptureActivity extends AppCompatActivity {
                 pokemon.setEvolution(evolutionStage);
             }
         });
+        type_pokemon = obtenerType_pokemon(pokemon);
 
         // Configurar la lista de items de la mochila
         List<Item> itemList = new ArrayList<>();
@@ -61,7 +62,7 @@ public class CaptureActivity extends AppCompatActivity {
                 "Pokeball","Category",100,"https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/master-ball.png","description","short Desc", "..."
         ));
 
-        BackpackAdapter adapter = new BackpackAdapter(this, itemList);
+        BackpackAdapter adapter = new BackpackAdapter(this, itemList, this);
         ListView listView = findViewById(R.id.listViewBackpack);
         listView.setAdapter(adapter);
 
@@ -72,14 +73,63 @@ public class CaptureActivity extends AppCompatActivity {
 
     }
 
+
+    public void onItemUseClick(Item item) {
+        System.out.println("Usando el item: " + item.getName());
+
+
+        calcularProbabilidadCaptura(item.getName());
+    }
+
     public static boolean calcularProbabilidadShiny() {
         Random random = new Random();
-//        int randomNumber = random.nextInt(500) + 1;
-        int randomNumber = random.nextInt(2) + 1;
+        int randomNumber = random.nextInt(500) + 1;
+        //int randomNumber = random.nextInt(2) + 1;
 
         return randomNumber == 1;
     }
+    public static int obtenerType_pokemon(Pokemon pokemon) {
+        Random random = new Random();
+        int valorIntermedio = 0;
 
+        if (pokemon.isLegendary()){// Legendarios
 
+            valorIntermedio = 350 + random.nextInt(151); // 350 + (0-150)
+        }else {
+            switch (pokemon.getEvolution()) {
+                case 1: // Primera evolución
+                    valorIntermedio = 20 + random.nextInt(61); // 20 + (0-60)
+                    break;
+                case 2: // Segunda evolución
+                    valorIntermedio = 80 + random.nextInt(121); // 80 + (0-120)
+                    break;
+                case 3: // Tercera evolución
+                    valorIntermedio = 200 + random.nextInt(151); // 200 + (0-150)
+                    break;
+            }
+        }
+        return valorIntermedio;
+    }
+
+    public boolean calcularProbabilidadCaptura(String tipoPokeball) {
+        Random random = new Random();
+        int randomNumber;
+
+        switch (tipoPokeball) {
+            case "Pokeball":
+                randomNumber = random.nextInt(600);
+                return randomNumber > (600 - type_pokemon) / 600.0 * 1;
+            case "Superball":
+                randomNumber = random.nextInt(600);
+                return randomNumber > (600 - type_pokemon) / 600.0 * 1.5;
+            case "Ultraball":
+                randomNumber = random.nextInt(600);
+                return randomNumber > (600 - type_pokemon) / 600.0 * 2;
+            case "Masterball":
+                return true;
+            default:
+                return false;
+        }
+    }
 
 }
