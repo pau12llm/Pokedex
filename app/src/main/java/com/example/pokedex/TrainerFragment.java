@@ -150,6 +150,7 @@ public class TrainerFragment extends Fragment {
                             userNameTextView.setText(newName);
                             // Optionally, clear the EditText
                             userNameEditText.setText("");
+                            //pol
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
