@@ -74,11 +74,11 @@ public class EmailPasswordActivity extends AppCompatActivity {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         Map<String, Object> user = new HashMap<>();
-        user.put("nombre", name); // Cambiado a "nombre" para mantener la consistencia
+        user.put("nombre", name);
         user.put("email", email);
         user.put("money", 1000);
-        user.put("items", new ArrayList<>()); // Añadido el campo "items" como una lista vacía
-        user.put("pokemons", new ArrayList<>()); // Añadido el campo "pokemons" como una lista vacía
+        user.put("items", new HashMap<String, Integer>()); // Cambiado a mapa para manejar cantidades
+        user.put("pokemons", new ArrayList<>());
 
         db.collection("users")
                 .add(user)
@@ -96,6 +96,7 @@ public class EmailPasswordActivity extends AppCompatActivity {
                     }
                 });
     }
+
 
     @Override
     protected void onStart() {

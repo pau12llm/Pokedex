@@ -120,7 +120,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="TextView" />
+            android:text="0" />
 
         <Button
             android:id="@+id/buttonless"
@@ -159,7 +159,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
-            android:layout_marginEnd="150dp"
+            android:layout_marginEnd="8dp"
             android:text=""
             android:textColor="@color/black" />
 
