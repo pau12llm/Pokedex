@@ -109,7 +109,7 @@ public class CaptureActivity extends AppCompatActivity implements OnItemUseClick
             }).addOnFailureListener(e -> Toast.makeText(CaptureActivity.this, "Failed to fetch items: " + e.getMessage(), Toast.LENGTH_SHORT).show());
         }
     }
-
+//ultima versio
     private void fetchItemDetails(String itemName, int quantity) {
         String url = "https://pokeapi.co/api/v2/item/" + itemName;
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(url, null, response -> {
