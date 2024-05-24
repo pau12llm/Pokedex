@@ -1,4 +1,5 @@
 package com.example.pokedex;
+
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -48,7 +49,6 @@ public class ShopFragment extends Fragment {
         // Configurar el RecyclerView con un GridLayoutManager
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
 
-
         // Crear un adaptador vacío por ahora
         itemAdapter = new ShopItemAdapter(getContext(), itemList);
         recyclerView.setAdapter(itemAdapter);
@@ -76,7 +76,6 @@ public class ShopFragment extends Fragment {
                                 String itemUrl = itemObject.getString("url");
                                 // Suponiendo que el precio está representado como una cadena en el JSON
 
-
                                 fetchItemImage(itemName, itemUrl);
                             }
                             // Notificar al adaptador que los datos han cambiado
@@ -97,6 +96,7 @@ public class ShopFragment extends Fragment {
         RequestQueue requestQueue = Volley.newRequestQueue(getContext());
         requestQueue.add(jsonObjectRequest);
     }
+
     private void fetchItemImage(String itemName, String itemUrl) {
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, itemUrl, null,
                 new Response.Listener<JSONObject>() {
@@ -139,23 +139,14 @@ public class ShopFragment extends Fragment {
                             // Obtener la descripción anterior del ítem
                             String description = response.getJSONArray("effect_entries").getJSONObject(0).getString("effect");
 
-                            //Log.d(TAG, "Item Name: " + itemName);
-                            //Log.d(TAG, "Item Category: " + category);
-                            //Log.d(TAG, "Item price: " + price);
-                           // Log.d(TAG, "Short Effect: " + shortdescription);
-                           // Log.d(TAG, "Flavor Text: " + descriptionMotivation);
-                           // Log.d(TAG, "Description: " + description);
-
                             // Agregar el ítem a la lista y notificar al adaptador
-                            itemList.add(new Item(itemName, category, price, imageUrl, description, shortdescription, descriptionMotivation));
+                            itemList.add(new Item(itemName, category, price, imageUrl, description, shortdescription, descriptionMotivation, 0)); // La cantidad es 0
                             itemAdapter.notifyDataSetChanged();
                         } catch (JSONException e) {
                             e.printStackTrace();
                             Log.e(TAG, "Error parsing JSON", e);
                         }
                     }
-
-
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
@@ -167,5 +158,4 @@ public class ShopFragment extends Fragment {
         RequestQueue requestQueue = Volley.newRequestQueue(getContext());
         requestQueue.add(jsonObjectRequest);
     }
-
 }

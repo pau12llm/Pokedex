@@ -8,6 +8,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import com.bumptech.glide.Glide;
 
 import java.util.List;
@@ -28,7 +29,7 @@ public class BackpackAdapter extends ArrayAdapter<Item> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View listItem = convertView;
-        if(listItem == null) {
+        if (listItem == null) {
             listItem = LayoutInflater.from(mContext).inflate(R.layout.item_backpack, parent, false);
         }
 
@@ -43,21 +44,15 @@ public class BackpackAdapter extends ArrayAdapter<Item> {
         textViewName.setText(currentItem.getName());
 
         TextView textViewNumber = listItem.findViewById(R.id.itemNumber);
-        textViewNumber.setText("15");
+        textViewNumber.setText(String.valueOf(currentItem.getQuantity()));
 
         Button btnUse = listItem.findViewById(R.id.btn_use);
-        btnUse.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (listener != null) {
-                    listener.onItemUseClick(currentItem);
-                }
+        btnUse.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onItemUseClick(currentItem);
             }
         });
 
         return listItem;
     }
-
-
-
 }

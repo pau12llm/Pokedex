@@ -18,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -26,7 +27,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
 
 public class TrainerFragment extends Fragment {
@@ -38,7 +41,6 @@ public class TrainerFragment extends Fragment {
     private TextView userMoneyTextView;
     private ImageButton changeNameButton;
     private Button logoutButton;
-
 
     // Firebase
     private FirebaseAuth mAuth;
@@ -90,7 +92,9 @@ public class TrainerFragment extends Fragment {
                 }
             });
 
+            // Get initial user data and add snapshot listener
             getUserData();
+            addSnapshotListener();
         } else {
             Toast.makeText(getActivity(), "No user is found!", Toast.LENGTH_SHORT).show();
         }
@@ -204,5 +208,26 @@ public class TrainerFragment extends Fragment {
             Toast.makeText(getActivity(), "No document ID found", Toast.LENGTH_SHORT).show();
         }
     }
-}
 
+    private void addSnapshotListener() {
+        if (documentId != null) {
+            DocumentReference docRef = db.collection("users").document(documentId);
+            docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                @Override
+                public void onEvent(DocumentSnapshot documentSnapshot, FirebaseFirestoreException e) {
+                    if (e != null) {
+                        Log.w(TAG, "Listen failed.", e);
+                        return;
+                    }
+
+                    if (documentSnapshot != null && documentSnapshot.exists()) {
+                        Long money = documentSnapshot.getLong("money");
+                        userMoneyTextView.setText("Money: " + String.valueOf(money));
+                    } else {
+                        Log.d(TAG, "Current data: null");
+                    }
+                }
+            });
+        }
+    }
+}

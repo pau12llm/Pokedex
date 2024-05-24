@@ -8,6 +8,18 @@ public class Item {
     private String description;
     private String shortdescription;
     private String descriptionMotivation;
+    private int quantity;
+
+    public Item(String name, String category, int price, String imageUrl, String description, String shortdescription, String descriptionMotivation, int quantity) {
+        this.name = name;
+        this.category = category;
+        this.imageUrl = imageUrl;
+        this.price = price;
+        this.description = description;
+        this.shortdescription = shortdescription;
+        this.descriptionMotivation = descriptionMotivation;
+        this.quantity = quantity;
+    }
 
     public String getDescription() {
         return description;
@@ -15,16 +27,6 @@ public class Item {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public Item(String name, String category, int price, String imageUrl, String description, String shortdescription, String descriptionMotivation) {
-        this.name = name;
-        this.category = category;
-        this.imageUrl = imageUrl;
-        this.price = price;
-        this.description=description;
-        this.shortdescription=shortdescription;
-        this.descriptionMotivation=descriptionMotivation;
     }
 
     public String getShortdescription() {
@@ -51,9 +53,6 @@ public class Item {
         this.price = price;
     }
 
-
-
-    // Getter y Setter para el nombre
     public String getName() {
         return name;
     }
@@ -62,7 +61,6 @@ public class Item {
         this.name = name;
     }
 
-    // Getter y Setter para la categoría
     public String getCategory() {
         return category;
     }
@@ -71,12 +69,19 @@ public class Item {
         this.category = category;
     }
 
-    // Getter y Setter para la URL de la imagen
     public String getImageUrl() {
         return imageUrl;
     }
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
     }
 }
