@@ -156,6 +156,9 @@ public class ShopItemAdapter extends RecyclerView.Adapter<ShopItemAdapter.ItemVi
 
         buttonBuy.setOnClickListener(v -> {
             int quantity = Integer.parseInt(textquantity.getText().toString());
+            if (quantity > 0) {
+
+
             int totalCost = quantity * item.getPrice();
 
             db.collection("users")
@@ -166,13 +169,34 @@ public class ShopItemAdapter extends RecyclerView.Adapter<ShopItemAdapter.ItemVi
                             Long userMoney = task.getResult().getLong("money");
                             if (userMoney != null && userMoney >= totalCost) {
                                 DocumentReference userDocRef = db.collection("users").document(documentId);
-
+//                                userDocRef.get().addOnSuccessListener(documentSnapshot -> {
+//                                    if (documentSnapshot.exists()) {
+//                                        Map<String, Object> itemsMap = (Map<String, Object>) documentSnapshot.get("items");
+//                                        if (itemsMap == null) {
+//                                            itemsMap = new HashMap<>();
+//                                        }
+//                                        int currentQuantity = itemsMap.containsKey(item.getName()) ? ((Long) itemsMap.get(item.getName())).intValue() : 0;
+//                                        itemsMap.put(item.getName(), currentQuantity + quantity);
+//
+//                                        userDocRef.update("money", userMoney - totalCost, "items", itemsMap)
+//                                                .addOnSuccessListener(aVoid -> {
+//                                                    Toast.makeText(context, "Item purchased successfully", Toast.LENGTH_SHORT).show();
+//                                                    popupWindow.dismiss();
+//                                                })
+//                                                .addOnFailureListener(e -> Toast.makeText(context, "Purchase failed", Toast.LENGTH_SHORT).show());
+//                                    }
+//                                });
                                 userDocRef.get().addOnSuccessListener(documentSnapshot -> {
                                     if (documentSnapshot.exists()) {
-                                        Map<String, Object> itemsMap = (Map<String, Object>) documentSnapshot.get("items");
-                                        if (itemsMap == null) {
+                                        Object itemsObject = documentSnapshot.get("items");
+                                        Map<String, Object> itemsMap;
+
+                                        if (itemsObject instanceof Map) {
+                                            itemsMap = (Map<String, Object>) itemsObject;
+                                        } else {
                                             itemsMap = new HashMap<>();
                                         }
+
                                         int currentQuantity = itemsMap.containsKey(item.getName()) ? ((Long) itemsMap.get(item.getName())).intValue() : 0;
                                         itemsMap.put(item.getName(), currentQuantity + quantity);
 
@@ -189,6 +213,9 @@ public class ShopItemAdapter extends RecyclerView.Adapter<ShopItemAdapter.ItemVi
                             }
                         }
                     });
+            } else {
+                Toast.makeText(context, "You have not indicated how many units", Toast.LENGTH_SHORT).show();
+            }
         });
 
         popupWindow.showAtLocation(rootView, Gravity.CENTER, 0, 0);

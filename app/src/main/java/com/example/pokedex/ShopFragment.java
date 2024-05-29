@@ -24,6 +24,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class ShopFragment extends Fragment {
 
@@ -75,8 +76,10 @@ public class ShopFragment extends Fragment {
                                 String itemName = itemObject.getString("name");
                                 String itemUrl = itemObject.getString("url");
                                 // Suponiendo que el precio está representado como una cadena en el JSON
+                                if (itemName.contains("ball")) {
+                                    fetchItemImage(itemName, itemUrl);
+                                }
 
-                                fetchItemImage(itemName, itemUrl);
                             }
                             // Notificar al adaptador que los datos han cambiado
                             itemAdapter.notifyDataSetChanged();
@@ -134,7 +137,8 @@ public class ShopFragment extends Fragment {
                             // Obtener la categoría y el precio del ítem
                             JSONObject categoryObject = response.getJSONObject("category");
                             String category = categoryObject.getString("name");
-                            int price = response.getInt("cost");
+//                            int price = response.getInt("cost");
+                            int price = calcularPrecioItem(itemName);
 
                             // Obtener la descripción anterior del ítem
                             String description = response.getJSONArray("effect_entries").getJSONObject(0).getString("effect");
@@ -157,5 +161,22 @@ public class ShopFragment extends Fragment {
         // Agregar la solicitud a la cola de solicitudes
         RequestQueue requestQueue = Volley.newRequestQueue(getContext());
         requestQueue.add(jsonObjectRequest);
+    }
+
+
+    public int calcularPrecioItem(String tipoPokeball) {
+
+        switch (tipoPokeball.toLowerCase()) {
+            case "poke-ball":
+                return 200;
+            case "super-ball":
+                return 500;
+            case "ultra-ball":
+                return 1500;
+            case "master-ball":
+                return 100000;
+            default:
+                return 1000;
+        }
     }
 }

@@ -18,8 +18,6 @@ public class PokeApiService {
         requestQueue = Volley.newRequestQueue(context);
     }
 
-
-
     public void getPokemonInfo(Pokemon pokemon, final VolleyCallback callback) {
         String url = "https://pokeapi.co/api/v2/pokemon-species/" + pokemon.getName().toLowerCase() + "/";
 

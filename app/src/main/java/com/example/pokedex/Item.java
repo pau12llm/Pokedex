@@ -21,6 +21,14 @@ public class Item {
         this.quantity = quantity;
     }
 
+    public Item(String name) {
+        this.name = name;
+    }
+    public Item(String name, int quantity) {
+        this.name = name;
+        this.quantity = quantity;
+    }
+
     public String getDescription() {
         return description;
     }

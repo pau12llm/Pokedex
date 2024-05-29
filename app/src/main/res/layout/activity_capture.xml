@@ -16,6 +16,15 @@
             android:scaleType="fitCenter"
             tools:srcCompat="@tools:sample/avatars" />
 
+        <TextView
+            android:id="@+id/textViewName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingTop="8dp"
+            android:text="Mochila"
+            android:textSize="16sp"
+            android:textStyle="bold" />
         <ListView
             android:id="@+id/listViewBackpack"
             android:layout_marginTop="10dp"
