@@ -23,6 +23,8 @@ public class Pokemon implements Serializable{
         private String[][] ability;
         private boolean legendary;
         private int evolution;
+
+        private String pokeball;
         private RequestQueue requestQueue;
 
         public Pokemon(int number, String name, String url_API) {
@@ -177,6 +179,14 @@ public class Pokemon implements Serializable{
 
         public void setAbility(String[][] ability) {
                 this.ability = ability;
+        }
+
+        public String getPokeball() {
+                return pokeball;
+        }
+
+        public void setPokeball(String pokeball) {
+                this.pokeball = pokeball;
         }
 
         @Override

@@ -465,10 +465,11 @@ public class PokedexFragment extends Fragment {
         Glide.with(requireContext())
                 .load(pokemon.getUrl_back_default())
                 .into(imageViewBack);
-        Glide.with(requireContext())
-                .load("https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/master-ball.png")
-                .into(pokeballImg);
-
+        if(pokemon.getPokeball()!=null) {
+            Glide.with(requireContext())
+                    .load(pokemon.getPokeball())
+                    .into(pokeballImg);
+        }
         System.out.println("testeo==" + pokemon.toString());
 
         // Configurar el contenido del popup

@@ -37,7 +37,7 @@ public class CaptureActivity extends AppCompatActivity implements OnItemUseClick
     private FirebaseFirestore db;
     private String userEmail;
     private String documentId;
-
+    private Pokemon pokemon;
     private PokeApiService pokeApiService;
 
     @Override
@@ -53,7 +53,7 @@ public class CaptureActivity extends AppCompatActivity implements OnItemUseClick
         adapter = new BackpackAdapter(this, itemList, this);
 
         // Obtener el objeto Pokemon de los extras del Intent
-        Pokemon pokemon = (Pokemon) getIntent().getSerializableExtra("pokemon");
+        pokemon = (Pokemon) getIntent().getSerializableExtra("pokemon");
 
         boolean esShiny = calcularProbabilidadShiny();
         ImageView imageViewFront = findViewById(R.id.imageViewFront);
@@ -118,7 +118,7 @@ public class CaptureActivity extends AppCompatActivity implements OnItemUseClick
                                         int quantity = ((Long) entry.getValue()).intValue();
                                         // Agregar el item a la lista de items
                                         if (quantity > 0) {
-                                            fetchItemDetails(itemName,quantity);
+                                            fetchItemDetails(itemName, quantity);
                                         }
                                     }
                                     // Notificar al adaptador que los datos han cambiado
@@ -131,33 +131,6 @@ public class CaptureActivity extends AppCompatActivity implements OnItemUseClick
                             // No se encontró ningún usuario con el correo electrónico específico
                         }
                     });
-//            String userId = user.getUid();
-//            DocumentReference userRef = db.collection("users").document(userId);
-//            userRef.get().addOnSuccessListener(documentSnapshot -> {
-//                if (documentSnapshot.exists()) {
-//                    Map<String, Object> userData = documentSnapshot.getData();
-//                    if (userData != null) {
-//                        Map<String, Object> itemsMap = (Map<String, Object>) userData.get("items");
-//                        if (itemsMap != null && !itemsMap.isEmpty()) {
-//                            itemList.clear(); // Limpiamos la lista de items actual antes de agregar los nuevos
-//                            for (Map.Entry<String, Object> entry : itemsMap.entrySet()) {
-//                                String itemName = entry.getKey();
-//                                int quantity = ((Long) entry.getValue()).intValue();
-//                                fetchItemDetails(itemName, quantity);
-//                            }
-//                        } else {
-//                            // El usuario no tiene ningún item, puedes manejar esta situación según tu lógica de la aplicación
-//                            Toast.makeText(CaptureActivity.this, "No items found for the user.", Toast.LENGTH_SHORT).show();
-//                        }
-//                    }
-//                } else {
-//                    // No se encontró un documento para el usuario actual, puedes manejar esta situación según tu lógica de la aplicación
-//                    Toast.makeText(CaptureActivity.this, "User document does not exist.", Toast.LENGTH_SHORT).show();
-//                }
-//            }).addOnFailureListener(e -> {
-//                // Ocurrió un error al obtener los items del usuario, puedes manejar esta situación según tu lógica de la aplicación
-//                Toast.makeText(CaptureActivity.this, "Failed to fetch user items: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-//            });
         }
     }
 
@@ -183,6 +156,7 @@ public class CaptureActivity extends AppCompatActivity implements OnItemUseClick
         requestQueue.add(jsonObjectRequest);
     }
 
+    @Override
     public void onItemUseClick(Item item) {
         System.out.println("Usando el item: " + item.getName());
 
@@ -196,6 +170,11 @@ public class CaptureActivity extends AppCompatActivity implements OnItemUseClick
             showToast("Genial, ¡has capturado al Pokémon!");
             int money = 400 + 100 * type_pokemon;
             moneyRefactor(money);
+
+            pokemon.setPokeball(item.getImageUrl());
+            // Registrar el Pokémon capturado en la base de datos
+            registerPokemon(item);
+
             finish();
         } else {
             showToast("Uy, ha faltado poco para capturar al Pokémon.");
@@ -243,7 +222,6 @@ public class CaptureActivity extends AppCompatActivity implements OnItemUseClick
             case "master-ball":
                 return true;
             default:
-//                return false;
                 return randomNumber < ((600 - type_pokemon) / 600.0 * 1.8);
         }
     }
@@ -252,7 +230,7 @@ public class CaptureActivity extends AppCompatActivity implements OnItemUseClick
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
-    private void moneyRefactor(int money){
+    private void moneyRefactor(int money) {
         db.collection("users")
                 .document(documentId)
                 .get()
@@ -261,77 +239,83 @@ public class CaptureActivity extends AppCompatActivity implements OnItemUseClick
                         Long userMoney = task.getResult().getLong("money");
                         if (userMoney != null) {
                             DocumentReference userDocRef = db.collection("users").document(documentId);
-                            userDocRef.get().addOnSuccessListener(documentSnapshot -> {
-                                if (documentSnapshot.exists()) {
-
-                                    userDocRef.update("money", userMoney + money)
-                                            .addOnSuccessListener(aVoid -> {
-                                                //showToast("Item purchased successfully");
-
-                                            })
-                                            .addOnFailureListener(e -> showToast("Purchase failed"));
-                                }
-                            });
-                        } else {
-                            //showToast( "Not enough money");
+                            userDocRef.update("money", userMoney + money);
                         }
                     }
                 });
-
     }
 
-    private void itemRefactor(Item item){
-        db.collection("users")
-                .document(documentId)
-                .get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful() && task.getResult() != null) {
-                        Long userMoney = task.getResult().getLong("money");
-                        if (userMoney != null) {
+    private void itemRefactor(Item item) {
+        FirebaseUser user = mAuth.getCurrentUser();
+
+        if (user != null) {
+            userEmail = user.getEmail();
+
+            db.collection("users")
+                    .whereEqualTo("email", userEmail)
+                    .get()
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful() && !task.getResult().isEmpty()) {
+                            DocumentSnapshot document = task.getResult().getDocuments().get(0);
+                            documentId = document.getId();
+
                             DocumentReference userDocRef = db.collection("users").document(documentId);
-                            userDocRef.get().addOnSuccessListener(documentSnapshot -> {
-                                if (documentSnapshot.exists()) {
-                                    Object itemsObject = documentSnapshot.get("items");
-                                    Map<String, Object> itemsMap;
 
-                                    if (itemsObject instanceof Map) {
-                                        itemsMap = (Map<String, Object>) itemsObject;
-                                    } else {
-                                        itemsMap = new HashMap<>();
-                                    }
+                            Map<String, Object> updates = new HashMap<>();
 
-                                    int currentQuantity = itemsMap.containsKey(item.getName()) ? ((Long) itemsMap.get(item.getName())).intValue() : 0;
-                                    itemsMap.put(item.getName(), currentQuantity - 1);
+                            // Decrementar la cantidad del item usado
+                            int newQuantity = item.getQuantity() - 1;
+                            if (newQuantity > 0) {
+                                updates.put("items." + item.getName(), newQuantity);
+                            } else {
+                                updates.put("items." + item.getName(), null); // Eliminar el item si la cantidad es 0
+                            }
 
-                                    userDocRef.update("items", itemsMap)
-                                            .addOnSuccessListener(aVoid -> {
-                                                updateItemQuantity(item);
-                                                //showToast("Item purchased successfully");
-
-                                            })
-                                            .addOnFailureListener(e -> showToast("Purchase failed"));
-                                }
-                            });
-                        } else {
-                            //showToast( "Not enough money");
+                            userDocRef.update(updates)
+                                    .addOnSuccessListener(aVoid -> {
+                                        item.setQuantity(newQuantity);
+                                        if (newQuantity == 0) {
+                                            itemList.remove(item); // Eliminar el item de la lista si la cantidad es 0
+                                        }
+                                        adapter.notifyDataSetChanged(); // Notificar al adaptador que los datos han cambiado
+                                    })
+                                    .addOnFailureListener(e -> Toast.makeText(CaptureActivity.this, "Error al actualizar la cantidad de items", Toast.LENGTH_SHORT).show());
                         }
-                    }
-                });
-
-    }
-    private void updateItemQuantity(Item item) {
-        for (int i = 0; i < itemList.size(); i++) {
-            Item listItem = itemList.get(i);
-            if (listItem.getName().equals(item.getName())) {
-                int newQuantity = listItem.getQuantity() - 1;
-                if (newQuantity <= 0) {
-                    itemList.remove(i);  // Eliminar el ítem de la lista si la cantidad llega a 0
-                } else {
-                    listItem.setQuantity(newQuantity);  // Actualizar la cantidad
-                }
-                break;
-            }
+                    });
         }
-        adapter.notifyDataSetChanged();  // Notificar al adaptador que los datos han cambiado
+    }
+
+    private void registerPokemon(Item item) {
+        FirebaseUser user = mAuth.getCurrentUser();
+
+        if (user != null) {
+            userEmail = user.getEmail();
+
+            db.collection("users")
+                    .whereEqualTo("email", userEmail)
+                    .get()
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful() && !task.getResult().isEmpty()) {
+                            DocumentSnapshot document = task.getResult().getDocuments().get(0);
+                            documentId = document.getId();
+
+                            DocumentReference userDocRef = db.collection("users").document(documentId);
+
+                            // Obtener el mapa de Pokémon del usuario
+                            Map<String, Object> pokemonsMap = (Map<String, Object>) document.get("pokemons");
+                            if (pokemonsMap == null) {
+                                pokemonsMap = new HashMap<>();
+                            }
+
+                            // Agregar el nuevo Pokémon capturado
+                            pokemonsMap.put(pokemon.getName(), pokemon);
+
+                            // Actualizar el documento del usuario en Firestore
+                            userDocRef.update("pokemons", pokemonsMap)
+                                    .addOnSuccessListener(aVoid -> Toast.makeText(CaptureActivity.this, "Pokémon registrado exitosamente", Toast.LENGTH_SHORT).show())
+                                    .addOnFailureListener(e -> Toast.makeText(CaptureActivity.this, "Error al registrar el Pokémon", Toast.LENGTH_SHORT).show());
+                        }
+                    });
+        }
     }
 }
