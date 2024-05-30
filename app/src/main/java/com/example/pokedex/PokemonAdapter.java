@@ -1,7 +1,6 @@
 package com.example.pokedex;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +16,7 @@ import java.util.List;
 public class PokemonAdapter extends BaseAdapter {
 
     private List<Pokemon> pokemonList;
-    private List<Pokemon> filteredPokemonList= pokemonList;
+    private List<Pokemon> filteredPokemonList = pokemonList;
     private static final String TAG = "PokedexFragment";
     private Context context;
 
@@ -45,12 +44,10 @@ public class PokemonAdapter extends BaseAdapter {
         return pokemonList.get(position);
     }
 
-
     @Override
     public long getItemId(int position) {
         return position;
     }
-
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -62,7 +59,6 @@ public class PokemonAdapter extends BaseAdapter {
             viewHolder.textViewName = convertView.findViewById(R.id.textViewName);
             viewHolder.imageViewPokemon = convertView.findViewById(R.id.imageView);
             viewHolder.pokeballImg = convertView.findViewById(R.id.pokeballImg);
-
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
@@ -84,14 +80,13 @@ public class PokemonAdapter extends BaseAdapter {
                 .load(imageUrl)
                 .into(viewHolder.imageViewPokemon);
 
-
+        // Cargar la imagen de la Poké Ball utilizando Glide
         Glide.with(context)
-                .load("https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/master-ball.png")
+                .load(pokemon.getPokeball())
                 .into(viewHolder.pokeballImg);
 
         return convertView;
     }
-
 
     private static class ViewHolder {
         TextView textViewName;
