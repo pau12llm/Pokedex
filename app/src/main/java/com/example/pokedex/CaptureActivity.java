@@ -268,7 +268,7 @@ public class CaptureActivity extends AppCompatActivity implements OnItemUseClick
                             if (newQuantity > 0) {
                                 updates.put("items." + item.getName(), newQuantity);
                             } else {
-                                updates.put("items." + item.getName(), null); // Eliminar el item si la cantidad es 0
+                                updates.put("items." + item.getName(), 0); // Eliminar el item si la cantidad es 0
                             }
 
                             userDocRef.update(updates)
