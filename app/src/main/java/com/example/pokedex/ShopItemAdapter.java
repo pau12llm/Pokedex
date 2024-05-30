@@ -87,7 +87,7 @@ public class ShopItemAdapter extends RecyclerView.Adapter<ShopItemAdapter.ItemVi
         final TextView popupItemDescription2 = popupView.findViewById(R.id.textViewAbility);
         final TextView userMoneyTextView = popupView.findViewById(R.id.textView11);
 
-        // Obtener el usuario actual y su dinero
+        // Obtener el usuario actual y su dinero!
         FirebaseUser user = mAuth.getCurrentUser();
         if (user != null) {
             userEmail = user.getEmail();
