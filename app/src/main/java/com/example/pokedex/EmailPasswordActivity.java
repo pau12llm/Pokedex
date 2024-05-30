@@ -78,7 +78,7 @@ public class EmailPasswordActivity extends AppCompatActivity {
         user.put("email", email);
         user.put("money", 1000);
         user.put("items", new HashMap<String, Integer>()); // Cambiado a mapa para manejar cantidades
-        user.put("pokemons", new ArrayList<>());
+        user.put("pokemons", new HashMap<String, Integer>());
 
         db.collection("users")
                 .add(user)
