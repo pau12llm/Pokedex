@@ -145,7 +145,7 @@ public class PokedexFragment extends Fragment {
         isLoading = true;
 
         String pokemonUrl = BASE_URL + "pokemon/" + query.toLowerCase();
-        System.out.println(" analizar la respuesta JSON 0:" + pokemonUrl);
+        System.out.println(" parse JSON response0:" + pokemonUrl);
         JsonObjectRequest request = new JsonObjectRequest(
                 Request.Method.GET,
                 pokemonUrl,
@@ -183,7 +183,7 @@ public class PokedexFragment extends Fragment {
                             adapter.notifyDataSetChanged();
                         } catch (JSONException e) {
                             e.printStackTrace();
-                            System.out.println("Error al analizar la respuesta JSON 2: " + e.getMessage());
+                            System.out.println("Error parsing JSON 2 response: " + e.getMessage());
                         }
                         isLoading = false;
                     }
@@ -192,7 +192,7 @@ public class PokedexFragment extends Fragment {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         isLoading = false;
-                        Log.e(TAG, "Error en la solicitud: " + error.toString());
+                        Log.e(TAG, "Request Error: " + error.toString());
                     }
                 }
         );
@@ -239,7 +239,7 @@ public class PokedexFragment extends Fragment {
 
                         } catch (JSONException e) {
                             e.printStackTrace();
-                            Log.e(TAG, "Error al analizar la respuesta JSON: " + e.getMessage());
+                            Log.e(TAG, "Error parsing JSON response: " + e.getMessage());
                         }
                     }
                 },
@@ -247,7 +247,7 @@ public class PokedexFragment extends Fragment {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         isLoading = false;
-                        Log.e(TAG, "Error en la solicitud: " + error.toString());
+                        Log.e(TAG, "Request error: " + error.toString());
                     }
                 }
         );
@@ -334,14 +334,14 @@ public class PokedexFragment extends Fragment {
                             adapter.notifyDataSetChanged();
                         } catch (JSONException e) {
                             e.printStackTrace();
-                            Log.e(TAG, "Error al analizar la respuesta JSON del detalle del Pokémon: " + e.getMessage());
+                            Log.e(TAG, "Error parsing Pokémon detail JSON response: " + e.getMessage());
                         }
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.e(TAG, "Error en la solicitud del detalle del Pokémon: " + error.toString());
+                        Log.e(TAG, "Error in requesting Pokémon details: " + error.toString());
                     }
                 }
         );
@@ -381,14 +381,14 @@ public class PokedexFragment extends Fragment {
 //                            adapter.notifyDataSetChanged(); // Notificar al adaptador que los datos han cambiado
                         } catch (JSONException e) {
                             e.printStackTrace();
-                            Log.e(TAG, "Error al analizar la respuesta JSON del detalle del Pokémon: " + e.getMessage());
+                            Log.e(TAG, "Error parsing Pokémon detail JSON response: " + e.getMessage());
                         }
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.e(TAG, "Error en la solicitud del detalle del Pokémon: " + error.toString());
+                        Log.e(TAG, "Error in requesting Pokémon details: " + error.toString());
                     }
                 }
         );
@@ -483,7 +483,7 @@ public class PokedexFragment extends Fragment {
         btn_capture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                System.out.println("Vamos a capturar a " +pokemon.getName());
+                System.out.println("go to capture " +pokemon.getName());
                 Intent intent = new Intent(v.getContext(), CaptureActivity.class);
 
                 // Si necesitas pasar datos adicionales a la nueva actividad, puedes hacerlo aquí

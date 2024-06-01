@@ -120,13 +120,13 @@ public class EmailPasswordActivity extends AppCompatActivity {
                     } else {
                         // Si el registro falla, muestra un mensaje al usuario
                         if (task.getException() instanceof FirebaseAuthWeakPasswordException) {
-                            Toast.makeText(EmailPasswordActivity.this, "La contraseña es demasiado débil.",
+                            Toast.makeText(EmailPasswordActivity.this, "Password too weak.",
                                     Toast.LENGTH_SHORT).show();
                         } else if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
-                            Toast.makeText(EmailPasswordActivity.this, "Las credenciales son inválidas.",
+                            Toast.makeText(EmailPasswordActivity.this, "Credentials are invalid.",
                                     Toast.LENGTH_SHORT).show();
                         } else if (task.getException() instanceof FirebaseAuthUserCollisionException) {
-                            Toast.makeText(EmailPasswordActivity.this, "Ya existe una cuenta con este correo electrónico.",
+                            Toast.makeText(EmailPasswordActivity.this, "An account already exists with this email.",
                                     Toast.LENGTH_SHORT).show();
                         } else {
                             Toast.makeText(EmailPasswordActivity.this, task.getException().getMessage(),
@@ -149,7 +149,7 @@ public class EmailPasswordActivity extends AppCompatActivity {
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         Log.d(TAG, "User profile updated.");
-                        Toast.makeText(EmailPasswordActivity.this, "Te has registrado correctamente.",
+                        Toast.makeText(EmailPasswordActivity.this, "You have registered successfully.",
                                 Toast.LENGTH_SHORT).show();
                         finish();
                     }

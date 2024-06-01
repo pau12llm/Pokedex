@@ -47,7 +47,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="16dp"
         android:background="@drawable/boton_poke"
-        android:text="Iniciar Sesión" />
+        android:text="@string/login" />
 
     <TextView
         android:textStyle="bold"
@@ -55,7 +55,7 @@
         android:gravity="center"
         android:layout_marginTop="20dp"
         android:id="@+id/registerNow"
-        android:text="click here to register"
+        android:text="@string/clichiere"
         android:textColor="@color/textColorPrimary"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />

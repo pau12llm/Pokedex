@@ -72,9 +72,9 @@ public class CaptureActivity extends AppCompatActivity implements OnItemUseClick
         pokeApiService.getPokemonInfo(pokemon, new PokeApiService.VolleyCallback() {
             @Override
             public void onSuccess(String pokemonName, int evolutionStage, boolean isLegendary) {
-                String info = "Nombre: " + pokemonName + "\n" +
-                        "Etapa de evolución: " + evolutionStage + "\n" +
-                        "Es legendario: " + isLegendary;
+                String info = "Name: " + pokemonName + "\n" +
+                        "Evolution step: " + evolutionStage + "\n" +
+                        "Is lengendary: " + isLegendary;
                 System.out.println(info);
                 pokemon.setLegendary(isLegendary);
                 pokemon.setEvolution(evolutionStage);
@@ -158,16 +158,16 @@ public class CaptureActivity extends AppCompatActivity implements OnItemUseClick
 
     @Override
     public void onItemUseClick(Item item) {
-        System.out.println("Usando el item: " + item.getName());
+        System.out.println("Usign the item: " + item.getName());
 
         // Calcular la probabilidad de captura
         boolean capturado = calcularProbabilidadCaptura(item.getName());
         itemRefactor(item);
 
-        System.out.println("capturado? " + capturado);
+        System.out.println("Captured? " + capturado);
         // Mostrar un Toast dependiendo del resultado de la captura
         if (capturado) {
-            showToast("Genial, ¡has capturado al Pokémon!");
+            showToast("Great, you caught the Pokémon!");
             int money = 400 + 100 * type_pokemon;
             moneyRefactor(money);
 
@@ -177,7 +177,7 @@ public class CaptureActivity extends AppCompatActivity implements OnItemUseClick
 
             finish();
         } else {
-            showToast("Uy, ha faltado poco para capturar al Pokémon.");
+            showToast("Oops, we were almost there to capture the Pokémon.");
         }
     }
 
@@ -279,7 +279,7 @@ public class CaptureActivity extends AppCompatActivity implements OnItemUseClick
                                         }
                                         adapter.notifyDataSetChanged(); // Notificar al adaptador que los datos han cambiado
                                     })
-                                    .addOnFailureListener(e -> Toast.makeText(CaptureActivity.this, "Error al actualizar la cantidad de items", Toast.LENGTH_SHORT).show());
+                                    .addOnFailureListener(e -> Toast.makeText(CaptureActivity.this, "Error updating the number of items", Toast.LENGTH_SHORT).show());
                         }
                     });
         }
@@ -312,8 +312,8 @@ public class CaptureActivity extends AppCompatActivity implements OnItemUseClick
 
                             // Actualizar el documento del usuario en Firestore
                             userDocRef.update("pokemons", pokemonsMap)
-                                    .addOnSuccessListener(aVoid -> Toast.makeText(CaptureActivity.this, "Pokémon registrado exitosamente", Toast.LENGTH_SHORT).show())
-                                    .addOnFailureListener(e -> Toast.makeText(CaptureActivity.this, "Error al registrar el Pokémon", Toast.LENGTH_SHORT).show());
+                                    .addOnSuccessListener(aVoid -> Toast.makeText(CaptureActivity.this, "Pokémon successfully registered", Toast.LENGTH_SHORT).show())
+                                    .addOnFailureListener(e -> Toast.makeText(CaptureActivity.this, "Error registering Pokémon", Toast.LENGTH_SHORT).show());
                         }
                     });
         }
