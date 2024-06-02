@@ -24,7 +24,7 @@
     <string name="TitleTrainer">TRAINER</string>
     <string name="clichiere">click here to register</string>
     <string name="buscandu">Buscar Pokemon</string>
-
+    <string name="close">Logout</string>
     <string name="hp_stats">Hp %1$d/255</string>
     <string name="attack_stats">Attack %1$d/255</string>
     <string name="defense_stats">Defense %1$d/255</string>
