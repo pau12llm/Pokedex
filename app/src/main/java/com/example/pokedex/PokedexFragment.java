@@ -36,6 +36,13 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -43,6 +50,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -59,7 +67,7 @@ public class PokedexFragment extends Fragment {
     private PokemonAdapter adapter;
     private List<Pokemon> pokemonList;
     private List<Pokemon> pokemonListSearch;
-
+    private List<Pokemon> capturedPokemonList;
     private EditText searchEditText;
 
     private int offset = 0;
@@ -74,7 +82,9 @@ public class PokedexFragment extends Fragment {
     private ProgressBar specialDefenseBar;
     private ProgressBar speedBar;
 
-
+    private FirebaseFirestore db;
+    private FirebaseAuth mAuth;
+    private String documentId;
     private View popupView;
 
     @Override
@@ -82,6 +92,11 @@ public class PokedexFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_pokedex, container, false);
 
+
+        mAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
+        capturedPokemonList = new ArrayList<Pokemon>();
+        getUserData();
         // Inicializar la cola de solicitudes Volley
         requestQueue = Volley.newRequestQueue(requireContext());
 
@@ -98,7 +113,7 @@ public class PokedexFragment extends Fragment {
         gridView.setAdapter(adapter);
 
         // Realizar la primera solicitud para cargar los primeros Pokémon
-        pokemonListRequest();
+//        pokemonListRequest();
 
         searchEditText = view.findViewById(R.id.searchEditText);
 
@@ -176,7 +191,7 @@ public class PokedexFragment extends Fragment {
                                 Pokemon pokemon = new Pokemon(151, abilityName, abilityUrl);
                                 pokemonDetailRequest(pokemon);
 
-                                //System.out.println("pokeimg==" + pokemon.getUrl_front_default());
+
                                 // Agregar el Pokémon a la lista
                                 pokemonListSearch = new ArrayList<>();
                                 pokemonListSearch.clear();
@@ -231,6 +246,16 @@ public class PokedexFragment extends Fragment {
                                 name = name.substring(0, 1).toUpperCase() + name.substring(1);
                                 String url = pokemonJSON.getString("url");
                                 Pokemon pokemon = new Pokemon(offset + i + 1, name, url);
+
+                                // Verificar si el Pokémon está en la lista de capturados y actualizar pokeball y habilidad
+                                for (Pokemon capturedPokemon : capturedPokemonList) {
+
+                                    if (capturedPokemon.getName().equalsIgnoreCase(pokemon.getName())) {
+                                        pokemon.setPokeball(capturedPokemon.getPokeball());
+                                        pokemon.setAbility(capturedPokemon.getAbility());
+                                        break;
+                                    }
+                                }
                                 pokemonList.add(pokemon);
 
                                 pokemonDetailRequest(pokemon);
@@ -552,8 +577,6 @@ public class PokedexFragment extends Fragment {
                         if (capturedPokemon != null) {
                             // Actualizar el nombre del Pokémon en el fragmento
                             Pokemon originalPokemon = pokemonList.get(capturedPokemon.getNumber()-1); // Asegúrate de tener el índice correcto
-                            System.out.println("captured Pokemon ability:"+capturedPokemon.getAbility());
-                            System.out.println("captured Pokemon pokeball:"+capturedPokemon.getPokeball());
                             originalPokemon.setAbility(capturedPokemon.getAbility());
                             originalPokemon.setPokeball(capturedPokemon.getPokeball());
 
@@ -576,6 +599,54 @@ public class PokedexFragment extends Fragment {
         Glide.with(requireContext())
                 .load(pokemon.getPokeball())
                 .into(pokeballImg);
+    }
+    private void getUserData() {
+        FirebaseUser user = mAuth.getCurrentUser();
+        String userEmail = user.getEmail();
+
+        db.collection("users")
+                .whereEqualTo("email", userEmail)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            QuerySnapshot querySnapshot = task.getResult();
+                            if (!querySnapshot.isEmpty()) {
+                                DocumentSnapshot document = querySnapshot.getDocuments().get(0);
+                                documentId = document.getId();  // Asignar el valor a la variable de instancia
+                                loadCapturedPokemons(document);
+                            } else {
+                                Log.d(TAG, "No such document");
+                            }
+                        } else {
+                            Log.d(TAG, "get failed with ", task.getException());
+                        }
+                    }
+                });
+    }
+
+    private void loadCapturedPokemons(DocumentSnapshot document) {
+        Map<String, Object> pokemonsMap = (Map<String, Object>) document.get("pokemons");
+        if (pokemonsMap != null) {
+            capturedPokemonList = new ArrayList<>(); // Inicializar la lista
+            for (Map.Entry<String, Object> entry : pokemonsMap.entrySet()) {
+                Map<String, Object> pokemonData = (Map<String, Object>) entry.getValue();
+                String name = (String) pokemonData.get("name");
+                String url_front_default = (String) pokemonData.get("url_front_default");
+                String pokeball = (String) pokemonData.get("pokeball");
+                String ability = (String) pokemonData.get("ability");
+
+                Pokemon pokemon = new Pokemon(0, name, "");
+                pokemon.setUrl_front_default(url_front_default);
+                pokemon.setPokeball(pokeball);
+                pokemon.setAbility(ability);
+                capturedPokemonList.add(pokemon);
+
+            }
+        }
+        // Realizar la primera solicitud para cargar los primeros Pokémon
+        pokemonListRequest();
     }
 
 }
