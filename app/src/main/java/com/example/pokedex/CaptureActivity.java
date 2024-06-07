@@ -1,5 +1,7 @@
 package com.example.pokedex;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -19,13 +21,16 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import androidx.lifecycle.ViewModelProvider;
 
 public class CaptureActivity extends AppCompatActivity implements OnItemUseClickListener {
 
@@ -172,10 +177,9 @@ public class CaptureActivity extends AppCompatActivity implements OnItemUseClick
             moneyRefactor(money);
 
             pokemon.setPokeball(item.getImageUrl());
-            // Registrar el Pokémon capturado en la base de datos
-            registerPokemon(item);
 
-            finish();
+            getAbility();
+
         } else {
             showToast("Oops, we were almost there to capture the Pokémon.");
         }
@@ -285,7 +289,7 @@ public class CaptureActivity extends AppCompatActivity implements OnItemUseClick
         }
     }
 
-    private void registerPokemon(Item item) {
+    private void registerPokemon() {
         FirebaseUser user = mAuth.getCurrentUser();
 
         if (user != null) {
@@ -307,6 +311,8 @@ public class CaptureActivity extends AppCompatActivity implements OnItemUseClick
                                 pokemonsMap = new HashMap<>();
                             }
 
+                            System.out.println("Agregar el nuevo Pokémon capturado");
+                            System.out.println(pokemon.toString());
                             // Agregar el nuevo Pokémon capturado
                             pokemonsMap.put(pokemon.getName(), pokemon);
 
@@ -317,5 +323,57 @@ public class CaptureActivity extends AppCompatActivity implements OnItemUseClick
                         }
                     });
         }
+    }
+
+
+    private void getAbility() {
+        String url = "https://pokeapi.co/api/v2/pokemon/" + pokemon.getNumber() + "/";
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(url, null, response -> {
+            try {
+                JSONArray abilitiesArray = response.getJSONArray("abilities");
+                List<String> nonHiddenAbilities = new ArrayList<>();
+                String hiddenAbility = null;
+
+                for (int i = 0; i < abilitiesArray.length(); i++) {
+                    JSONObject abilityObject = abilitiesArray.getJSONObject(i);
+                    String abilityName = abilityObject.getJSONObject("ability").getString("name");
+                    boolean isHidden = abilityObject.getBoolean("is_hidden");
+
+                    if (isHidden) {
+                        hiddenAbility = abilityName;
+                    } else {
+                        nonHiddenAbilities.add(abilityName);
+                    }
+                }
+
+                String chosenAbility = null;
+                Random random = new Random();
+
+                if (hiddenAbility != null && random.nextDouble() < 0.25) {
+                    chosenAbility = hiddenAbility;
+                } else {
+                    chosenAbility = nonHiddenAbilities.get(random.nextInt(nonHiddenAbilities.size()));
+                }
+
+                pokemon.setAbility(chosenAbility);
+
+                System.out.println("Chosen ability: " + chosenAbility);
+
+                // Registrar el Pokémon capturado en la base de datos
+                registerPokemon();
+
+                // Aquí finalizamos la actividad y enviamos el resultado
+                Intent intent = new Intent();
+                intent.putExtra("capturedPokemon", pokemon);
+                setResult(Activity.RESULT_OK, intent);
+                finish();
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }, error -> Toast.makeText(CaptureActivity.this, "Failed to fetch abilities: " + error.getMessage(), Toast.LENGTH_SHORT).show());
+
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        requestQueue.add(jsonObjectRequest);
     }
 }

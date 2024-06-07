@@ -3,6 +3,7 @@ package com.example.pokedex;
 import com.android.volley.RequestQueue;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class Pokemon implements Serializable{
         private int number;
@@ -13,6 +14,7 @@ public class Pokemon implements Serializable{
         private String url_back_default;
         private String url_back_shiny;
         private String description;
+        private List<String> type;
         private boolean shiny;
         private int hp;
         private int attack;
@@ -20,12 +22,13 @@ public class Pokemon implements Serializable{
         private int defense;
         private int special_defense;
         private int speed;
-        private String[][] ability;
+        private String ability ="";
         private boolean legendary;
         private int evolution;
 
         private String pokeball;
         private RequestQueue requestQueue;
+
 
         public Pokemon(int number, String name, String url_API) {
                 this.number = number;
@@ -173,12 +176,29 @@ public class Pokemon implements Serializable{
                 this.evolution = evolution;
         }
 
-        public String[][] getAbility() {
+        public String getAbility() {
                 return ability;
         }
 
-        public void setAbility(String[][] ability) {
+        public void setAbility(String ability) {
                 this.ability = ability;
+        }
+
+
+        public String getAllTypes() {
+                String types ="";
+                for (int i = 0; i < type.size(); i++) {
+                        types += type.get(i)+"  ";
+                }
+                return types;
+        }
+
+        public List<String> getType() {
+                return type;
+        }
+
+        public void setType(List<String> type) {
+                this.type = type;
         }
 
         public String getPokeball() {
@@ -193,21 +213,22 @@ public class Pokemon implements Serializable{
         public String toString() {
                 return "Pokemon{" +
                         "number=" + number +
-                        ", name='" + name + '\'' +
-                        ", url_API='" + url_API + '\'' +
-                        ", url_front_default='" + url_front_default + '\'' +
-                        ", url_front_shiny='" + url_front_shiny + '\'' +
-                        ", url_back_default='" + url_back_default + '\'' +
-                        ", url_back_shiny='" + url_back_shiny + '\'' +
-                        ", description='" + description + '\'' +
-                        ", shiny=" + shiny +
-                        ", requestQueue=" + requestQueue +
-                        ", hp=" + hp +
-                        ", attack=" + attack +
-                        ", special_attack=" + special_attack +
-                        ", defense=" + defense +
-                        ", special_defense=" + special_defense +
-                        ", speed=" + speed +
+                        ",\n name='" + name + '\'' +
+                        ",\n url_API='" + url_API + '\'' +
+                        ",\n url_front_default='" + url_front_default + '\'' +
+                        ",\n url_front_shiny='" + url_front_shiny + '\'' +
+                        ",\n url_back_default='" + url_back_default + '\'' +
+                        ",\n url_back_shiny='" + url_back_shiny + '\'' +
+                        ",\n description='" + description + '\'' +
+                        ",\n shiny=" + shiny +
+                        ",\n requestQueue=" + requestQueue +
+                        ",\n hp=" + hp +
+                        ",\n attack=" + attack +
+                        ",\n special_attack=" + special_attack +
+                        ",\n defense=" + defense +
+                        ",\n special_defense=" + special_defense +
+                        ",\n speed=" + speed +
+                        ",\n ability=" + ability +
                         '}';
         }
 }

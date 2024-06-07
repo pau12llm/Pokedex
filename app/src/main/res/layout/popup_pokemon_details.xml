@@ -13,7 +13,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:orientation="horizontal">
 
@@ -43,12 +43,20 @@
 
     </FrameLayout>
 
+    <LinearLayout
+        android:id="@+id/typeImagesContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center">
+    </LinearLayout>
+
+
     <TextView
         android:id="@+id/textViewName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:paddingTop="8dp"
         android:text="Description"
         android:textSize="16sp"
         android:textStyle="bold" />
@@ -58,7 +66,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="left"
-        android:paddingBottom="10dp"
         android:text="Pokemon Name"
         android:textSize="14sp" />
 
@@ -70,25 +77,21 @@
         android:text="Ability"
         android:textSize="16sp"
         android:textStyle="bold"
-        android:visibility="invisible" />
+         />
 
     <TextView
         android:id="@+id/textViewAbility"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="left"
-        android:paddingTop="8dp"
-        android:paddingBottom="10dp"
-        android:text=""
-        android:textSize="14sp"
-        android:visibility="invisible" />
+        android:text="..."
+        android:textSize="14sp" />
 
     <TextView
         android:id="@+id/titleState"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:paddingTop="8dp"
         android:text="Stats"
         android:textSize="16sp"
         android:textStyle="bold" />

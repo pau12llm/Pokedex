@@ -1,10 +1,14 @@
 package com.example.pokedex;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
@@ -19,6 +23,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -69,6 +74,8 @@ public class PokedexFragment extends Fragment {
     private ProgressBar specialDefenseBar;
     private ProgressBar speedBar;
 
+
+    private View popupView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -164,8 +171,7 @@ public class PokedexFragment extends Fragment {
                                 // Obtener el nombre de la habilidad desde el objeto de habilidad
                                 String abilityName = abilityObject.getString("name");
                                 String abilityUrl = "https://pokeapi.co/api/v2/pokemon/" + idPokemon + "/";
-                                //System.out.println("abilityName=" + abilityName);
-                                //System.out.println("abilityUrl=" + abilityUrl);
+
 
                                 Pokemon pokemon = new Pokemon(151, abilityName, abilityUrl);
                                 pokemonDetailRequest(pokemon);
@@ -279,6 +285,16 @@ public class PokedexFragment extends Fragment {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
+                            JSONArray typesJson = response.getJSONArray("types");
+
+                            List<String> types = new ArrayList<>();
+                            for (int i = 0; i < typesJson.length(); i++) {
+                                JSONObject entryType = typesJson.getJSONObject(i);
+                                JSONObject type = entryType.getJSONObject("type");
+                                String strTypes = type.getString("name");
+                                strTypes = "https://veekun.com/dex/media/types/en/"+strTypes+".png";
+                                types.add(strTypes);
+                            }
 
                             JSONObject sprites = response.getJSONObject("sprites");
                             String defaultImageUrl = sprites.getString("front_default");
@@ -319,6 +335,7 @@ public class PokedexFragment extends Fragment {
                                     speed = entry.getInt("base_stat");
                                 }
                             }
+                            pokemon.setType(types);
                             pokemon.setUrl_front_default(defaultImageUrl);
                             pokemon.setUrl_front_shiny(shinyImageUrl);
                             pokemon.setUrl_back_default(defaultBackImageUrl);
@@ -412,13 +429,15 @@ public class PokedexFragment extends Fragment {
 
         // Inflar el layout del popup personalizado
         LayoutInflater inflater = requireActivity().getLayoutInflater();
-        View popupView = inflater.inflate(R.layout.popup_pokemon_details, null);
+        //View popupView = inflater.inflate(R.layout.popup_pokemon_details, null);
+        popupView = inflater.inflate(R.layout.popup_pokemon_details, null);
 
         // Obtener referencias a los elementos del layout del popup
         ImageView imageViewFront = popupView.findViewById(R.id.imageViewFront);
         ImageView imageViewBack = popupView.findViewById(R.id.imageViewBack);
         ImageView pokeballImg = popupView.findViewById(R.id.pokeballImg);
 
+        TextView textViewAbility = popupView.findViewById(R.id.textViewAbility);
         TextView textViewDescription = popupView.findViewById(R.id.textViewDescription);
         TextView textViewHp = popupView.findViewById(R.id.textViewHp);
         TextView textViewAttack = popupView.findViewById(R.id.textViewAttack);
@@ -427,8 +446,14 @@ public class PokedexFragment extends Fragment {
         TextView textViewSpecialDefense = popupView.findViewById(R.id.textViewSpecialDefense);
         TextView textViewSpeed = popupView.findViewById(R.id.textViewSpeed);
 
+        if (!pokemon.getAbility().equals("")) {
+            textViewAbility.setText(pokemon.getAbility());
+        }
+
+
         textViewDescription.setText(pokemon.getDescription());
-        //Actualiza progresBar stats
+
+        // Actualiza el texto de las estadísticas
         String hpText = getString(R.string.hp_stats, pokemon.getHp());
         textViewHp.setText(hpText);
         String attackText = getString(R.string.attack_stats, pokemon.getAttack());
@@ -442,6 +467,7 @@ public class PokedexFragment extends Fragment {
         String speedText = getString(R.string.speed_stats, pokemon.getSpeed());
         textViewSpeed.setText(speedText);
 
+        // Configurar los ProgressBar de estadísticas
         hpBar = popupView.findViewById(R.id.hpBar);
         attackBar = popupView.findViewById(R.id.attackBar);
         defenseBar = popupView.findViewById(R.id.defenseBar);
@@ -457,7 +483,6 @@ public class PokedexFragment extends Fragment {
         specialDefenseBar.setProgress(pokemon.getSpecial_defense());
         speedBar.setProgress(pokemon.getSpeed());
 
-
         // Cargar la imagen del Pokémon usando Glide
         Glide.with(requireContext())
                 .load(pokemon.getUrl_front_default())
@@ -466,10 +491,27 @@ public class PokedexFragment extends Fragment {
                 .load(pokemon.getUrl_back_default())
                 .into(imageViewBack);
         Glide.with(requireContext())
-                .load("https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/master-ball.png")
+                .load(pokemon.getPokeball())
                 .into(pokeballImg);
 
-        System.out.println("testeo==" + pokemon.toString());
+        // Añadir imágenes de los tipos al contenedor
+        LinearLayout typeImagesContainer = popupView.findViewById(R.id.typeImagesContainer);
+        typeImagesContainer.removeAllViews(); // Limpiar cualquier vista existente
+
+        for (String typeUrl : pokemon.getType()) {
+            ImageView typeImageView = new ImageView(requireContext());
+
+            // Configurar el tamaño de la imagen
+            int imageSize = getResources().getDimensionPixelSize(R.dimen.type_image_size); // Tamaño deseado en píxeles
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(imageSize, imageSize);
+            typeImageView.setLayoutParams(layoutParams);
+
+            Glide.with(requireContext())
+                    .load(typeUrl)
+                    .into(typeImageView);
+
+            typeImagesContainer.addView(typeImageView);
+        }
 
         // Configurar el contenido del popup
         builder.setView(popupView);
@@ -478,20 +520,62 @@ public class PokedexFragment extends Fragment {
         AlertDialog dialog = builder.create();
         dialog.show();
 
-
+        // Configurar el botón de captura
         Button btn_capture = popupView.findViewById(R.id.buttonCapture);
+        if (pokemon.getPokeball() != null) {
+            btn_capture.setVisibility(View.INVISIBLE);
+        }
         btn_capture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                System.out.println("go to capture " +pokemon.getName());
                 Intent intent = new Intent(v.getContext(), CaptureActivity.class);
 
-                // Si necesitas pasar datos adicionales a la nueva actividad, puedes hacerlo aquí
+                // Pasar datos adicionales a la nueva actividad
                 intent.putExtra("pokemon", pokemon);
 
-                // Iniciar la actividad usando el Intent
-                v.getContext().startActivity(intent);
+                // Iniciar la actividad usando el Intent con captureActivityResultLauncher
+                captureActivityResultLauncher.launch(intent);
             }
         });
     }
+
+    private ActivityResultLauncher<Intent> captureActivityResultLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+
+                if (result.getResultCode() == Activity.RESULT_OK) {
+                    Intent data = result.getData();
+
+                    if (data != null) {
+
+                        Pokemon capturedPokemon = (Pokemon) data.getSerializableExtra("capturedPokemon");
+                        if (capturedPokemon != null) {
+                            // Actualizar el nombre del Pokémon en el fragmento
+                            Pokemon originalPokemon = pokemonList.get(capturedPokemon.getNumber()-1); // Asegúrate de tener el índice correcto
+                            System.out.println("captured Pokemon ability:"+capturedPokemon.getAbility());
+                            System.out.println("captured Pokemon pokeball:"+capturedPokemon.getPokeball());
+                            originalPokemon.setAbility(capturedPokemon.getAbility());
+                            originalPokemon.setPokeball(capturedPokemon.getPokeball());
+
+                            // Notificar al adaptador que los datos han cambiado
+                            adapter.notifyDataSetChanged();
+                            // Actualizar el contenido del popup
+                            updatePokemonDetailsPopup(originalPokemon);
+                        }
+                    }
+                }
+            }
+    );
+
+    private void updatePokemonDetailsPopup(Pokemon pokemon) {
+
+        TextView textViewAbility = popupView.findViewById(R.id.textViewAbility);
+        ImageView pokeballImg = popupView.findViewById(R.id.pokeballImg);
+
+        textViewAbility.setText(pokemon.getAbility());
+        Glide.with(requireContext())
+                .load(pokemon.getPokeball())
+                .into(pokeballImg);
+    }
+
 }
