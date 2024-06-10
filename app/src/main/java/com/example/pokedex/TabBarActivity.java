@@ -9,13 +9,12 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
-import androidx.viewpager.widget.ViewPager;
-
-import com.google.android.material.tabs.TabLayout;
-
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
+
+import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
 public class TabBarActivity extends AppCompatActivity {
@@ -73,5 +72,10 @@ public class TabBarActivity extends AppCompatActivity {
             // Devuelve el número total de fragments
             return 3;
         }
+    }
+
+    public TrainerFragment getTrainerFragment() {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        return (TrainerFragment) fragmentManager.findFragmentByTag("f1");
     }
 }

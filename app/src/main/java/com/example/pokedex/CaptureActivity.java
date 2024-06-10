@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
@@ -30,7 +31,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import androidx.lifecycle.ViewModelProvider;
 
 public class CaptureActivity extends AppCompatActivity implements OnItemUseClickListener {
 
@@ -314,17 +314,25 @@ public class CaptureActivity extends AppCompatActivity implements OnItemUseClick
                             System.out.println("Agregar el nuevo Pokémon capturado");
                             System.out.println(pokemon.toString());
                             // Agregar el nuevo Pokémon capturado
-                            pokemonsMap.put(pokemon.getName(), pokemon);
+                            Map<String, Object> pokemonData = new HashMap<>();
+                            pokemonData.put("name", pokemon.getName());
+                            pokemonData.put("url_front_default", pokemon.getUrl_front_default());
+                            pokemonData.put("pokeball", pokemon.getPokeball());
+
+                            pokemonsMap.put(pokemon.getName(), pokemonData);
 
                             // Actualizar el documento del usuario en Firestore
                             userDocRef.update("pokemons", pokemonsMap)
-                                    .addOnSuccessListener(aVoid -> Toast.makeText(CaptureActivity.this, "Pokémon successfully registered", Toast.LENGTH_SHORT).show())
+                                    .addOnSuccessListener(aVoid -> {
+                                        Toast.makeText(CaptureActivity.this, "Pokémon successfully registered", Toast.LENGTH_SHORT).show();
+                                        // Notify the listener about the update
+                                        notifyTrainerFragment(pokemon);
+                                    })
                                     .addOnFailureListener(e -> Toast.makeText(CaptureActivity.this, "Error registering Pokémon", Toast.LENGTH_SHORT).show());
                         }
                     });
         }
     }
-
 
     private void getAbility() {
         String url = "https://pokeapi.co/api/v2/pokemon/" + pokemon.getNumber() + "/";
@@ -375,5 +383,14 @@ public class CaptureActivity extends AppCompatActivity implements OnItemUseClick
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.add(jsonObjectRequest);
+    }
+
+    private void notifyTrainerFragment(Pokemon pokemon) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        TrainerFragment trainerFragment = (TrainerFragment) fragmentManager.findFragmentByTag("trainer_fragment");
+
+        if (trainerFragment != null) {
+            trainerFragment.addCapturedPokemon(pokemon);
+        }
     }
 }

@@ -16,8 +16,7 @@ import java.util.List;
 public class PokemonAdapter extends BaseAdapter {
 
     private List<Pokemon> pokemonList;
-    private List<Pokemon> filteredPokemonList = pokemonList;
-    private static final String TAG = "PokedexFragment";
+    private List<Pokemon> filteredPokemonList;
     private Context context;
 
     public PokemonAdapter(Context context, List<Pokemon> pokemonList) {
