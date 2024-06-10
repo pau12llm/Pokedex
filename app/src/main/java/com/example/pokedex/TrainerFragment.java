@@ -1,21 +1,30 @@
 package com.example.pokedex;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -33,6 +42,8 @@ public class TrainerFragment extends Fragment {
     // UI components
     private ListView pokemonListView;
     private PokemonAdapter adapter;
+    private TextView userNameTextView;
+    private TextView userMoneyTextView;
 
     // Firebase
     private FirebaseAuth mAuth;
@@ -53,6 +64,8 @@ public class TrainerFragment extends Fragment {
 
         // Initialize UI views
         pokemonListView = view.findViewById(R.id.pokemonListView);
+        userNameTextView = view.findViewById(R.id.userNameTextView);
+        userMoneyTextView = view.findViewById(R.id.userMoneyTextView);
 
         // Initialize the list and adapter
         capturedPokemonList = new ArrayList<>();
@@ -72,6 +85,23 @@ public class TrainerFragment extends Fragment {
             Toast.makeText(getActivity(), "No user is found!", Toast.LENGTH_SHORT).show();
         }
 
+        // Set item click listener for list view
+        pokemonListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                showReleasePokemonPopup(capturedPokemonList.get(position));
+            }
+        });
+
+        // Set click listener for change name button
+        ImageView changeNameButton = view.findViewById(R.id.changeNameButton);
+        changeNameButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showChangeNamePopup();
+            }
+        });
+
         return view;
     }
 
@@ -88,6 +118,8 @@ public class TrainerFragment extends Fragment {
                                 DocumentSnapshot document = querySnapshot.getDocuments().get(0);
                                 documentId = document.getId();
                                 loadCapturedPokemons(document);
+                                userNameTextView.setText(document.getString("nombre"));
+                                userMoneyTextView.setText("Money: " + document.getLong("money"));
                             } else {
                                 Log.d(TAG, "No such document");
                             }
@@ -112,6 +144,8 @@ public class TrainerFragment extends Fragment {
 
                             if (documentSnapshot != null && documentSnapshot.exists()) {
                                 loadCapturedPokemons(documentSnapshot);
+                                userNameTextView.setText(documentSnapshot.getString("nombre"));
+                                userMoneyTextView.setText("Money: " + documentSnapshot.getLong("money"));
                             } else {
                                 Log.d(TAG, "Current data: null");
                             }
@@ -120,7 +154,7 @@ public class TrainerFragment extends Fragment {
         }
     }
 
-    private void loadCapturedPokemons(DocumentSnapshot document) {
+    public void loadCapturedPokemons(DocumentSnapshot document) {
         Map<String, Object> pokemonsMap = (Map<String, Object>) document.get("pokemons");
         if (pokemonsMap != null) {
             capturedPokemonList.clear(); // Clear the current list
@@ -136,6 +170,79 @@ public class TrainerFragment extends Fragment {
                 capturedPokemonList.add(pokemon);
             }
             adapter.notifyDataSetChanged(); // Notify the adapter to refresh the list
+        }
+    }
+
+    public void addCapturedPokemon(Pokemon pokemon) {
+        capturedPokemonList.add(pokemon);
+        adapter.notifyDataSetChanged();
+    }
+
+    private void showReleasePokemonPopup(Pokemon pokemon) {
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getActivity());
+        LayoutInflater inflater = this.getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.popup_release_pokemon, null);
+        dialogBuilder.setView(dialogView);
+
+        ImageView pokemonImageView = dialogView.findViewById(R.id.pokemonImageView);
+        Glide.with(this)
+                .load(pokemon.getUrl_front_default())
+                .into(pokemonImageView);
+
+        Button confirmReleaseButton = dialogView.findViewById(R.id.confirmReleaseButton);
+        confirmReleaseButton.setOnClickListener(v -> {
+            releasePokemon(pokemon.getName());
+        });
+
+        AlertDialog alertDialog = dialogBuilder.create();
+        alertDialog.show();
+    }
+
+    private void releasePokemon(String pokemonName) {
+        if (documentId != null) {
+            DocumentReference userDocRef = db.collection("users").document(documentId);
+            userDocRef.update("pokemons." + pokemonName, null)
+                    .addOnSuccessListener(aVoid -> {
+                        Toast.makeText(getActivity(), "Pokémon released", Toast.LENGTH_SHORT).show();
+                        // Update local list and notify adapter
+                        for (Pokemon p : capturedPokemonList) {
+                            if (p.getName().equals(pokemonName)) {
+                                capturedPokemonList.remove(p);
+                                break;
+                            }
+                        }
+                        adapter.notifyDataSetChanged();
+                    })
+                    .addOnFailureListener(e -> Toast.makeText(getActivity(), "Error releasing Pokémon", Toast.LENGTH_SHORT).show());
+        }
+    }
+
+    private void showChangeNamePopup() {
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getActivity());
+        LayoutInflater inflater = this.getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.name_change_popup, null);
+        dialogBuilder.setView(dialogView);
+
+        EditText popupUserNameEditText = dialogView.findViewById(R.id.popupUserNameEditText);
+        Button popupSaveButton = dialogView.findViewById(R.id.popupSaveButton);
+        popupSaveButton.setOnClickListener(v -> {
+            String newName = popupUserNameEditText.getText().toString();
+            changeTrainerName(newName);
+        });
+
+        AlertDialog alertDialog = dialogBuilder.create();
+        alertDialog.show();
+    }
+
+    private void changeTrainerName(String newName) {
+        if (documentId != null) {
+            DocumentReference userDocRef = db.collection("users").document(documentId);
+            userDocRef.update("nombre", newName)
+                    .addOnSuccessListener(aVoid -> {
+                        Toast.makeText(getActivity(), "Trainer name updated", Toast.LENGTH_SHORT).show();
+                        userNameTextView.setText(newName);
+                    })
+                    .addOnFailureListener(e -> Toast.makeText(getActivity(), "Error updating trainer name", Toast.LENGTH_SHORT).show());
         }
     }
 }
