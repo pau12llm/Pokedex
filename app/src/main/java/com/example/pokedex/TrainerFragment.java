@@ -74,18 +74,18 @@ public class TrainerFragment extends Fragment {
         adapter = new PokemonAdapter(getContext(), capturedPokemonList);
         pokemonListView.setAdapter(adapter);
 
-        // Get currently authenticated user
-        FirebaseUser user = mAuth.getCurrentUser();
-        if (user != null) {
-            userEmail = user.getEmail();
-            Log.d(TAG, "User Email: " + userEmail); // Log the user email
-
-            // Get initial user data and add snapshot listener
-            getUserData();
-            addSnapshotListener();
-        } else {
-            Toast.makeText(getActivity(), "No user is found!", Toast.LENGTH_SHORT).show();
-        }
+//        // Get currently authenticated user
+//        FirebaseUser user = mAuth.getCurrentUser();
+//        if (user != null) {
+//            userEmail = user.getEmail();
+//            Log.d(TAG, "User Email: " + userEmail); // Log the user email
+//
+//            // Get initial user data and add snapshot listener
+//            //getUserData();
+//            //addSnapshotListener();
+//        } else {
+//            Toast.makeText(getActivity(), "No user is found!", Toast.LENGTH_SHORT).show();
+//        }
 
         // Set item click listener for list view
         pokemonListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -107,6 +107,31 @@ public class TrainerFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d(TAG, "TrainerFragment is now visible");
+        // Aquí puedes agregar cualquier lógica que necesites ejecutar cada vez que el fragmento se vuelva visible.
+        // Por ejemplo, puedes recargar datos desde Firebase o actualizar la UI.
+        FirebaseUser user = mAuth.getCurrentUser();
+        if (user != null) {
+            userEmail = user.getEmail();
+            Log.d(TAG, "User Email: " + userEmail); // Log the user email
+
+            // Get initial user data and add snapshot listener
+            getUserData();
+            addSnapshotListener();
+        } else {
+            Toast.makeText(getActivity(), "No user is found!", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.d(TAG, "TrainerFragment is no longer visible");
+        // Aquí puedes agregar cualquier lógica que necesites ejecutar cada vez que el fragmento deje de ser visible.
+    }
     private void getUserData() {
         db.collection("users")
                 .whereEqualTo("email", userEmail)
