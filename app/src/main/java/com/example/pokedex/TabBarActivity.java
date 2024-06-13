@@ -33,6 +33,7 @@ public class TabBarActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_tab_bar);
 
+
         // Obtener TabLayout y ViewPager desde el layout
         TabLayout tabLayout = findViewById(R.id.tab_layout);
         ViewPager2 viewPager = findViewById(R.id.view_pager);

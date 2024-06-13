@@ -34,6 +34,7 @@ import java.util.Random;
 
 public class CaptureActivity extends AppCompatActivity implements OnItemUseClickListener {
 
+
     private List<Item> itemList;
     private BackpackAdapter adapter;
     private int type_pokemon;

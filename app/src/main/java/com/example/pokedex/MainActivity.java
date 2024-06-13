@@ -52,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 // Aquí inicia la actividad EmailPasswordActivity para iniciar sesión
                 startActivity(new Intent(MainActivity.this, EmailPasswordActivity.class));
+
             }
         });
     }

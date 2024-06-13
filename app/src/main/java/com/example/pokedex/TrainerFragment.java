@@ -51,7 +51,9 @@ public class TrainerFragment extends Fragment {
     private String userEmail;
     private String documentId;
 
+
     // Lista de Pokémon capturados
+
     private List<Pokemon> capturedPokemonList;
 
     @Override

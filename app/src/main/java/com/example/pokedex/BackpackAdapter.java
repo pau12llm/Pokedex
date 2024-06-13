@@ -15,6 +15,7 @@ import java.util.List;
 
 public class BackpackAdapter extends ArrayAdapter<Item> {
 
+
     private Context mContext;
     private List<Item> mItemList;
     private OnItemUseClickListener listener;

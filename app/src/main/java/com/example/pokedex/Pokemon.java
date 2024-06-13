@@ -22,6 +22,7 @@ public class Pokemon implements Serializable{
         private int defense;
         private int special_defense;
         private int speed;
+
         private String ability ="";
         private boolean legendary;
         private int evolution;

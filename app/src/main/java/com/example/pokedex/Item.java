@@ -19,6 +19,7 @@ public class Item {
         this.shortdescription = shortdescription;
         this.descriptionMotivation = descriptionMotivation;
         this.quantity = quantity;
+
     }
 
     public Item(String name) {

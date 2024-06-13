@@ -16,6 +16,7 @@ import java.util.List;
 public class PokemonAdapter extends BaseAdapter {
 
     private List<Pokemon> pokemonList;
+
     private List<Pokemon> filteredPokemonList;
     private Context context;
 

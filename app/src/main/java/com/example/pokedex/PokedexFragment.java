@@ -56,6 +56,7 @@ public class PokedexFragment extends Fragment {
 
     private RequestQueue requestQueue;
     private GridView gridView;
+
     private PokemonAdapter adapter;
     private List<Pokemon> pokemonList;
     private List<Pokemon> pokemonListSearch;

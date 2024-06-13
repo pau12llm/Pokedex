@@ -12,6 +12,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class PokeApiService {
+
     private RequestQueue requestQueue;
 
     public PokeApiService(Context context) {

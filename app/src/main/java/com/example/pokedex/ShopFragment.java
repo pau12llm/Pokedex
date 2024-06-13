@@ -118,6 +118,7 @@ public class ShopFragment extends Fragment {
                                 }
                             }
 
+
                             // Obtener la descripción de texto de sabor del ítem
                             JSONArray flavorTextEntries = response.getJSONArray("flavor_text_entries");
                             String descriptionMotivation = "";

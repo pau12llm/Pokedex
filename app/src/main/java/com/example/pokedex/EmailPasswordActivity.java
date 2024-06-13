@@ -26,6 +26,7 @@ import java.util.Map;
 
 public class EmailPasswordActivity extends AppCompatActivity {
 
+
     private static final String TAG = "EmailPassword";
     private FirebaseAuth fAuth;
     private FirebaseFirestore fStore;

@@ -91,6 +91,7 @@ public class ShopItemAdapter extends RecyclerView.Adapter<ShopItemAdapter.ItemVi
         FirebaseUser user = mAuth.getCurrentUser();
         if (user != null) {
             userEmail = user.getEmail();
+
             db.collection("users")
                     .whereEqualTo("email", userEmail)
                     .get()
