@@ -33,8 +33,8 @@ public class ShopFragment extends Fragment {
     private List<Item> itemList;
 
     private static final String TAG = "ShopFragment";
-    private int money = 0; // Variable para almacenar el dinero
-    private TextView textNumberTotal; // TextView para mostrar el total de dinero
+    private int money = 0;
+    private TextView textNumberTotal; //
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

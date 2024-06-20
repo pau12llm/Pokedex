@@ -170,23 +170,7 @@ public class ShopItemAdapter extends RecyclerView.Adapter<ShopItemAdapter.ItemVi
                             Long userMoney = task.getResult().getLong("money");
                             if (userMoney != null && userMoney >= totalCost) {
                                 DocumentReference userDocRef = db.collection("users").document(documentId);
-//                                userDocRef.get().addOnSuccessListener(documentSnapshot -> {
-//                                    if (documentSnapshot.exists()) {
-//                                        Map<String, Object> itemsMap = (Map<String, Object>) documentSnapshot.get("items");
-//                                        if (itemsMap == null) {
-//                                            itemsMap = new HashMap<>();
-//                                        }
-//                                        int currentQuantity = itemsMap.containsKey(item.getName()) ? ((Long) itemsMap.get(item.getName())).intValue() : 0;
-//                                        itemsMap.put(item.getName(), currentQuantity + quantity);
-//
-//                                        userDocRef.update("money", userMoney - totalCost, "items", itemsMap)
-//                                                .addOnSuccessListener(aVoid -> {
-//                                                    Toast.makeText(context, "Item purchased successfully", Toast.LENGTH_SHORT).show();
-//                                                    popupWindow.dismiss();
-//                                                })
-//                                                .addOnFailureListener(e -> Toast.makeText(context, "Purchase failed", Toast.LENGTH_SHORT).show());
-//                                    }
-//                                });
+
                                 userDocRef.get().addOnSuccessListener(documentSnapshot -> {
                                     if (documentSnapshot.exists()) {
                                         Object itemsObject = documentSnapshot.get("items");

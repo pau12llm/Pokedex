@@ -52,11 +52,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-/**
- * A simple {@link Fragment} subclass.
-
- * create an instance of this fragment.
- */
 
 public class PokedexFragment extends Fragment {
     private static final String TAG = "PokedexFragment";
@@ -453,12 +448,9 @@ public class PokedexFragment extends Fragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
         builder.setTitle(pokemon.getName());
 
-        // Inflar el layout del popup personalizado
         LayoutInflater inflater = requireActivity().getLayoutInflater();
-        //View popupView = inflater.inflate(R.layout.popup_pokemon_details, null);
         popupView = inflater.inflate(R.layout.popup_pokemon_details, null);
 
-        // Obtener referencias a los elementos del layout del popup
         ImageView imageViewFront = popupView.findViewById(R.id.imageViewFront);
         ImageView imageViewBack = popupView.findViewById(R.id.imageViewBack);
         ImageView pokeballImg = popupView.findViewById(R.id.pokeballImg);

@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
                     if (task.isSuccessful()) {
-                        // Sign in success, update UI with the signed-in user's information
+                        // Sign in success, update UI with the sign in user information
                         Log.d(TAG, "signInWithEmail:success");
                         startActivity(new Intent(MainActivity.this, TabBarActivity.class));
                         Toast.makeText(MainActivity.this, "Authentication ok.",

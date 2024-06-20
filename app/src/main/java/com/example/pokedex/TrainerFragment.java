@@ -39,13 +39,11 @@ public class TrainerFragment extends Fragment {
 
     private static final String TAG = "TrainerFragment";
 
-    // UI components
     private ListView pokemonListView;
     private PokemonAdapter adapter;
     private TextView userNameTextView;
     private TextView userMoneyTextView;
 
-    // Firebase
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
     private String userEmail;
@@ -64,30 +62,14 @@ public class TrainerFragment extends Fragment {
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
 
-        // Initialize UI views
         pokemonListView = view.findViewById(R.id.pokemonListView);
         userNameTextView = view.findViewById(R.id.userNameTextView);
         userMoneyTextView = view.findViewById(R.id.userMoneyTextView);
 
-        // Initialize the list and adapter
         capturedPokemonList = new ArrayList<>();
         adapter = new PokemonAdapter(getContext(), capturedPokemonList);
         pokemonListView.setAdapter(adapter);
 
-//        // Get currently authenticated user
-//        FirebaseUser user = mAuth.getCurrentUser();
-//        if (user != null) {
-//            userEmail = user.getEmail();
-//            Log.d(TAG, "User Email: " + userEmail); // Log the user email
-//
-//            // Get initial user data and add snapshot listener
-//            //getUserData();
-//            //addSnapshotListener();
-//        } else {
-//            Toast.makeText(getActivity(), "No user is found!", Toast.LENGTH_SHORT).show();
-//        }
-
-        // Set item click listener for list view
         pokemonListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -95,7 +77,6 @@ public class TrainerFragment extends Fragment {
             }
         });
 
-        // Set click listener for change name button
         ImageView changeNameButton = view.findViewById(R.id.changeNameButton);
         changeNameButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -111,8 +92,7 @@ public class TrainerFragment extends Fragment {
     public void onResume() {
         super.onResume();
         Log.d(TAG, "TrainerFragment is now visible");
-        // Aquí puedes agregar cualquier lógica que necesites ejecutar cada vez que el fragmento se vuelva visible.
-        // Por ejemplo, puedes recargar datos desde Firebase o actualizar la UI.
+
         FirebaseUser user = mAuth.getCurrentUser();
         if (user != null) {
             userEmail = user.getEmail();
@@ -130,7 +110,6 @@ public class TrainerFragment extends Fragment {
     public void onPause() {
         super.onPause();
         Log.d(TAG, "TrainerFragment is no longer visible");
-        // Aquí puedes agregar cualquier lógica que necesites ejecutar cada vez que el fragmento deje de ser visible.
     }
     private void getUserData() {
         db.collection("users")
